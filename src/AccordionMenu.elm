@@ -76,11 +76,13 @@ type Config msg
         , li : List (Attribute Never)
         , menu : MenuState -> List (Attribute Never)
         , menuTitle : MenuState -> List (Attribute Never)
+        , menuList : List (Attribute Never)
         , menuSeparator : List (Attribute Never)
         , menuLink : List (Attribute Never)
         , menuAction : List (Attribute Never)
         , menuSubMenu : MenuState -> List (Attribute Never)
         , subMenuTitle : MenuState -> List (Attribute Never)
+        , subMenuList : List (Attribute Never)
         , subMenuLink : List (Attribute Never)
         , subMenuAction : List (Attribute Never)
         }
@@ -138,16 +140,18 @@ customConfig :
         , li : List (Attribute Never)
         , menu : MenuState -> List (Attribute Never)
         , menuTitle : MenuState -> List (Attribute Never)
+        , menuList : List (Attribute Never)
         , menuSeparator : List (Attribute Never)
         , menuLink : List (Attribute Never)
         , menuAction : List (Attribute Never)
         , menuSubMenu : MenuState -> List (Attribute Never)
         , subMenuTitle : MenuState -> List (Attribute Never)
+        , subMenuList : List (Attribute Never)
         , subMenuLink : List (Attribute Never)
         , subMenuAction : List (Attribute Never)
     }
     -> Config msg
-customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuSeparator, menuLink, menuAction, menuSubMenu, subMenuTitle, subMenuLink, subMenuAction } =
+customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuList, menuSeparator, menuLink, menuAction, menuSubMenu, subMenuTitle, subMenuList, subMenuLink, subMenuAction } =
     Config
         { updateMenu = updateMenu
         , openArrow = openArrow
@@ -156,11 +160,13 @@ customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuS
         , li = li
         , menu = menu
         , menuTitle = menuTitle
+        , menuList = menuList
         , menuSeparator = menuSeparator
         , menuLink = menuLink
         , menuAction = menuAction
         , menuSubMenu = menuSubMenu
         , subMenuTitle = subMenuTitle
+        , subMenuList = subMenuList
         , subMenuLink = subMenuLink
         , subMenuAction = subMenuAction
         }
@@ -321,7 +327,7 @@ viewMenu :
     -> List (MenuItem msg)
     -> Html msg
 viewMenu (Config c) menuItems =
-    ul (noOpAttrs c.updateMenu c.ul)
+    ul (noOpAttrs c.updateMenu (c.ul ++ c.menuList))
         (List.indexedMap (viewMenuItem (Config c)) menuItems)
 
 
@@ -337,8 +343,8 @@ viewMenuItem (Config c) index item =
     in
         case item of
             MenuSeparator ->
-                li ((noOpAttrs c.updateMenu c.menuSeparator) ++ liAttrs)
-                    [ hr [] [] ]
+                li liAttrs
+                    [ hr (noOpAttrs c.updateMenu c.menuSeparator) [] ]
 
             MenuLink title href ->
                 li ((noOpAttrs c.updateMenu c.menuLink) ++ liAttrs)
@@ -392,7 +398,7 @@ viewSubMenu :
     -> List (SubMenuItem msg)
     -> Html msg
 viewSubMenu (Config c) items =
-    ul (noOpAttrs c.updateMenu c.ul)
+    ul (noOpAttrs c.updateMenu (c.ul ++ c.subMenuList))
         (List.map (viewSubMenuItem (Config c)) items)
 
 

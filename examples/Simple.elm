@@ -65,17 +65,19 @@ menuConfig : AccordionMenu.Config Msg
 menuConfig =
     AccordionMenu.customConfig
         { updateMenu = UpdateMenu
-        , openArrow = { attributes = [], children = [ text "↓" ] }
-        , closeArrow = { attributes = [], children = [ text "↑" ] }
+        , openArrow = { attributes = styleArrows, children = [ text "↓" ] }
+        , closeArrow = { attributes = styleArrows, children = [ text "↑" ] }
         , ul = styleLists
         , li = []
         , menu = styleMenu
         , menuTitle = styleMenuTitle
-        , menuSeparator = []
+        , menuList = styleMenuList
+        , menuSeparator = styleSeparator
         , menuLink = []
         , menuAction = []
         , menuSubMenu = (\_ -> [])
         , subMenuTitle = styleMenuTitle
+        , subMenuList = []
         , subMenuLink = []
         , subMenuAction = []
         }
@@ -92,6 +94,16 @@ styleLists =
         , ( "-webkit-margin-before", "0" )
         , ( "-webkit-margin-after", "0" )
         , ( "-webkit-padding-start", "0" )
+        ]
+    ]
+
+
+styleMenu : AccordionMenu.MenuState -> List (Attribute Never)
+styleMenu state =
+    [ style
+        [ ( "width", "300px" )
+        , ( "margin", "1em" )
+        , ( "position", "relative" )
         ]
     ]
 
@@ -119,12 +131,35 @@ styleMenuTitle state =
             ]
 
 
-styleMenu : AccordionMenu.MenuState -> List (Attribute Never)
-styleMenu state =
+styleMenuList : List (Attribute Never)
+styleMenuList =
     [ style
-        [ ( "width", "300px" )
-        , ( "margin", "1em" )
+        [ ( "position", "absolute" )
+        , ( "top", "0" )
+        , ( "left", "0" )
+        , ( "width", "100%" )
+        , ( "background-color", "#fff" )
+        , ( "padding", "1em" )
+        , ( "transform", "translate(10px, 35px)" )
+        , ( "box-shadow", "0 0 5px rgba(0, 0, 0, 0.3)" )
         ]
+    ]
+
+
+styleSeparator : List (Attribute Never)
+styleSeparator =
+    [ style
+        [ ( "border", "0" )
+        , ( "background", "rgba(0, 0, 0, 0.3)" )
+        , ( "height", "1px" )
+        ]
+    ]
+
+
+styleArrows : List (Attribute Never)
+styleArrows =
+    [ style
+        [ ( "margin-left", "5px" ) ]
     ]
 
 
