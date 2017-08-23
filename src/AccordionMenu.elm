@@ -2,6 +2,7 @@ module AccordionMenu
     exposing
         ( Menu
         , SubMenu
+        , MenuState(..)
         , Msg
         , Config
         , update
@@ -23,7 +24,7 @@ module AccordionMenu
 
 import Json.Decode as JD
 import Html exposing (..)
-import Html.Attributes exposing (title, href)
+import Html.Attributes exposing (title, href, style)
 import Html.Events exposing (onWithOptions, on)
 
 
@@ -71,13 +72,15 @@ type Config msg
         { updateMenu : Msg -> msg
         , openArrow : HtmlDetails Never
         , closeArrow : HtmlDetails Never
-        , menu : List (Attribute Never)
-        , menuTitle : List (Attribute Never)
+        , ul : List (Attribute Never)
+        , li : List (Attribute Never)
+        , menu : MenuState -> List (Attribute Never)
+        , menuTitle : MenuState -> List (Attribute Never)
         , menuSeparator : List (Attribute Never)
         , menuLink : List (Attribute Never)
         , menuAction : List (Attribute Never)
-        , menuSubMenu : List (Attribute Never)
-        , subMenuTitle : List (Attribute Never)
+        , menuSubMenu : MenuState -> List (Attribute Never)
+        , subMenuTitle : MenuState -> List (Attribute Never)
         , subMenuLink : List (Attribute Never)
         , subMenuAction : List (Attribute Never)
         }
@@ -131,22 +134,26 @@ customConfig :
         | updateMenu : Msg -> msg
         , openArrow : HtmlDetails Never
         , closeArrow : HtmlDetails Never
-        , menu : List (Attribute Never)
-        , menuTitle : List (Attribute Never)
+        , ul : List (Attribute Never)
+        , li : List (Attribute Never)
+        , menu : MenuState -> List (Attribute Never)
+        , menuTitle : MenuState -> List (Attribute Never)
         , menuSeparator : List (Attribute Never)
         , menuLink : List (Attribute Never)
         , menuAction : List (Attribute Never)
-        , menuSubMenu : List (Attribute Never)
-        , subMenuTitle : List (Attribute Never)
+        , menuSubMenu : MenuState -> List (Attribute Never)
+        , subMenuTitle : MenuState -> List (Attribute Never)
         , subMenuLink : List (Attribute Never)
         , subMenuAction : List (Attribute Never)
     }
     -> Config msg
-customConfig { updateMenu, openArrow, closeArrow, menu, menuTitle, menuSeparator, menuLink, menuAction, menuSubMenu, subMenuTitle, subMenuLink, subMenuAction } =
+customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuSeparator, menuLink, menuAction, menuSubMenu, subMenuTitle, subMenuLink, subMenuAction } =
     Config
         { updateMenu = updateMenu
         , openArrow = openArrow
         , closeArrow = closeArrow
+        , ul = ul
+        , li = li
         , menu = menu
         , menuTitle = menuTitle
         , menuSeparator = menuSeparator
@@ -269,7 +276,7 @@ openMenu (Menu menu) =
 
 view : Config msg -> Menu msg -> Html msg
 view (Config c) (Menu { title, items, state }) =
-    div (noOpAttrs c.updateMenu c.menu)
+    div (noOpAttrs c.updateMenu (c.menu state))
         ([ viewTitle (Config c) title state
          ]
             ++ (case state of
@@ -297,7 +304,7 @@ viewTitle (Config c) title_ state =
                 Closed ->
                     noOpHtmlDetails c.updateMenu c.openArrow
     in
-        div (noOpAttrs c.updateMenu c.menuTitle)
+        div (noOpAttrs c.updateMenu (c.menuTitle state))
             [ viewMenuTitleAction
                 title_
                 (OpenMenu |> c.updateMenu)
@@ -310,9 +317,9 @@ viewMenu :
     Config msg
     -> List (MenuItem msg)
     -> Html msg
-viewMenu config menuItems =
-    ul []
-        (List.indexedMap (viewMenuItem config) menuItems)
+viewMenu (Config c) menuItems =
+    ul (noOpAttrs c.updateMenu c.ul)
+        (List.indexedMap (viewMenuItem (Config c)) menuItems)
 
 
 viewMenuItem :
@@ -321,21 +328,25 @@ viewMenuItem :
     -> MenuItem msg
     -> Html msg
 viewMenuItem (Config c) index item =
+    let
+        liAttrs =
+            noOpAttrs c.updateMenu c.li
+    in
     case item of
         MenuSeparator ->
-            li (noOpAttrs c.updateMenu c.menuSeparator)
+            li ( (noOpAttrs c.updateMenu c.menuSeparator) ++ liAttrs )
                 [ hr [] [] ]
 
         MenuLink title href ->
-            li (noOpAttrs c.updateMenu c.menuLink)
+            li ( (noOpAttrs c.updateMenu c.menuLink) ++ liAttrs )
                 [ viewMenuLink title href [] ]
 
         MenuAction title click ->
-            li (noOpAttrs c.updateMenu c.menuAction)
+            li ( (noOpAttrs c.updateMenu c.menuAction) ++ liAttrs )
                 [ viewMenuAction title click [] ]
 
         MenuSubMenu (SubMenu { title, items, state }) ->
-            li (noOpAttrs c.updateMenu c.menuSubMenu)
+            li ( (noOpAttrs c.updateMenu (c.menuSubMenu state)) ++ liAttrs )
                 ([ viewSubTitle (Config c) index title state
                  ]
                     ++ (case state of
@@ -364,7 +375,7 @@ viewSubTitle (Config c) index title_ state =
                 Closed ->
                     (noOpHtmlDetails c.updateMenu c.openArrow)
     in
-        div (noOpAttrs c.updateMenu c.subMenuTitle)
+        div (noOpAttrs c.updateMenu (c.subMenuTitle state))
             [ viewMenuTitleAction
                 title_
                 (OpenSubMenu index |> c.updateMenu)
@@ -377,9 +388,9 @@ viewSubMenu :
     Config msg
     -> List (SubMenuItem msg)
     -> Html msg
-viewSubMenu config items =
-    ul []
-        (List.map (viewSubMenuItem config) items)
+viewSubMenu (Config c) items =
+    ul ( noOpAttrs c.updateMenu c.ul )
+        (List.map (viewSubMenuItem (Config c)) items)
 
 
 viewSubMenuItem :
@@ -387,13 +398,17 @@ viewSubMenuItem :
     -> SubMenuItem msg
     -> Html msg
 viewSubMenuItem (Config c) item =
+    let
+        liAttrs =
+            noOpAttrs c.updateMenu c.li
+    in
     case item of
         SubLink title href ->
-            li (noOpAttrs c.updateMenu c.subMenuLink)
+            li ( (noOpAttrs c.updateMenu c.subMenuLink) ++ liAttrs )
                 [ viewMenuLink title href [] ]
 
         SubAction title click ->
-            li (noOpAttrs c.updateMenu c.subMenuAction)
+            li ( (noOpAttrs c.updateMenu c.subMenuAction) ++ liAttrs )
                 [ viewMenuAction title click [] ]
 
 
@@ -406,13 +421,13 @@ viewMenuLink title_ href_ attribs =
 
 viewMenuAction : String -> msg -> List (Attribute msg) -> Html msg
 viewMenuAction title_ msg attribs =
-    a
-        ([ title title_ ]
-            ++ [ onWithOptions
-                    "click"
-                    { stopPropagation = False, preventDefault = True }
-                    (JD.succeed msg)
-               ]
+    div
+        ([ style [ ("cursor", "pointer") ]
+         , onWithOptions
+             "click"
+             { stopPropagation = False, preventDefault = True }
+             (JD.succeed msg)
+         ]
             ++ attribs
         )
         [ text title_ ]
@@ -420,8 +435,8 @@ viewMenuAction title_ msg attribs =
 
 viewMenuTitleAction : String -> msg -> msg -> HtmlDetails msg -> Html msg
 viewMenuTitleAction title_ mouseMsg clickMsg arrow =
-    a
-        [ title title_
+    div
+        [ style [ ("cursor", "pointer") ]
         , on "mouseover" (JD.succeed mouseMsg)
         , onWithOptions
             "click"
