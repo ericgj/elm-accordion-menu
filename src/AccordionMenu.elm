@@ -1,6 +1,9 @@
 module AccordionMenu
     exposing
-        ( Msg
+        ( Menu
+        , SubMenu
+        , Msg
+        , Config
         , update
         , view
         , customConfig
@@ -11,12 +14,17 @@ module AccordionMenu
         , subMenu
         , subMenuLink
         , subMenuAction
+        , toggleMenu
+        , closeMenu
+        , closeSubMenus
+        , closeMenuAndSubMenus
+        , openMenu
         )
 
 import Json.Decode as JD
 import Html exposing (..)
 import Html.Attributes exposing (title, href)
-import Html.Events exposing (onWithOptions)
+import Html.Events exposing (onWithOptions, on)
 
 
 type MenuState
@@ -158,7 +166,10 @@ customConfig { updateMenu, openArrow, closeArrow, menu, menuTitle, menuSeparator
 type Msg
     = ToggleMenuState
     | ToggleSubMenuState Int
-    | CloseAllSubMenus
+    | CloseMenu
+    | CloseSubMenus
+    | OpenMenu
+    | OpenSubMenu Int
     | NoOp
 
 
@@ -169,7 +180,7 @@ update msg (Menu menu) =
             (Menu menu)
 
         ToggleMenuState ->
-            Menu { menu | state = toggle menu.state }
+            toggleMenu (Menu menu)
 
         ToggleSubMenuState index ->
             let
@@ -186,17 +197,30 @@ update msg (Menu menu) =
             in
                 Menu { menu | items = List.indexedMap (toggleItemAt index) menu.items }
 
-        CloseAllSubMenus ->
-            let
-                closeSubMenu item =
-                    case item of
-                        MenuSubMenu (SubMenu submenu) ->
-                            MenuSubMenu (SubMenu { submenu | state = Closed })
+        CloseMenu ->
+            closeMenu (Menu menu)
 
-                        _ ->
-                            item
+        CloseSubMenus ->
+            closeSubMenus (Menu menu)
+
+        OpenMenu ->
+            openMenu (Menu menu)
+
+        OpenSubMenu index ->
+            let
+                openItemAt index i item =
+                    if i == index then
+                        case item of
+                            MenuSubMenu (SubMenu submenu) ->
+                                MenuSubMenu (SubMenu { submenu | state = Open })
+
+                            _ ->
+                                item
+                    else
+                        item
             in
-                Menu { menu | items = List.map closeSubMenu menu.items }
+                Menu { menu | items = List.indexedMap (openItemAt index) menu.items }
+
 
 
 toggle : MenuState -> MenuState
@@ -207,6 +231,36 @@ toggle mstate =
 
         Closed ->
             Open
+
+toggleMenu : Menu msg -> Menu msg
+toggleMenu (Menu menu) =
+    Menu { menu | state = toggle menu.state }
+
+closeMenu : Menu msg -> Menu msg
+closeMenu (Menu menu) =
+    Menu { menu | state = Closed }
+
+closeSubMenus : Menu msg -> Menu msg
+closeSubMenus (Menu menu) =
+    let
+        closeSubMenu item =
+            case item of
+                MenuSubMenu (SubMenu submenu) ->
+                    MenuSubMenu (SubMenu { submenu | state = Closed })
+
+                _ ->
+                    item
+    in
+        Menu { menu | items = List.map closeSubMenu menu.items }
+
+
+closeMenuAndSubMenus : Menu msg -> Menu msg
+closeMenuAndSubMenus =
+   closeSubMenus >> closeMenu
+
+openMenu : Menu msg -> Menu msg
+openMenu (Menu menu) =
+    Menu { menu | state = Open }
 
 
 
@@ -246,6 +300,7 @@ viewTitle (Config c) title_ state =
         div (noOpAttrs c.updateMenu c.menuTitle)
             [ viewMenuTitleAction
                 title_
+                (OpenMenu |> c.updateMenu)
                 (ToggleMenuState |> c.updateMenu)
                 (arrow state)
             ]
@@ -312,6 +367,7 @@ viewSubTitle (Config c) index title_ state =
         div (noOpAttrs c.updateMenu c.subMenuTitle)
             [ viewMenuTitleAction
                 title_
+                (OpenSubMenu index |> c.updateMenu)
                 (ToggleSubMenuState index |> c.updateMenu)
                 (arrow state)
             ]
@@ -354,7 +410,7 @@ viewMenuAction title_ msg attribs =
         ([ title title_ ]
             ++ [ onWithOptions
                     "click"
-                    { stopPropagation = True, preventDefault = True }
+                    { stopPropagation = False, preventDefault = True }
                     (JD.succeed msg)
                ]
             ++ attribs
@@ -362,14 +418,15 @@ viewMenuAction title_ msg attribs =
         [ text title_ ]
 
 
-viewMenuTitleAction : String -> msg -> HtmlDetails msg -> Html msg
-viewMenuTitleAction title_ msg arrow =
+viewMenuTitleAction : String -> msg -> msg -> HtmlDetails msg -> Html msg
+viewMenuTitleAction title_ mouseMsg clickMsg arrow =
     a
         [ title title_
+        , on "mouseover" (JD.succeed mouseMsg)
         , onWithOptions
-            "hover"
-            { stopPropagation = True, preventDefault = True }
-            (JD.succeed msg)
+            "click"
+            { stopPropagation = False, preventDefault = True }
+            (JD.succeed clickMsg)
         ]
         [ text title_
         , span arrow.attributes arrow.children
