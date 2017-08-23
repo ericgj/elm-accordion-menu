@@ -229,7 +229,6 @@ update msg (Menu menu) =
                 Menu { menu | items = List.indexedMap (openItemAt index) menu.items }
 
 
-
 toggle : MenuState -> MenuState
 toggle mstate =
     case mstate of
@@ -239,13 +238,16 @@ toggle mstate =
         Closed ->
             Open
 
+
 toggleMenu : Menu msg -> Menu msg
 toggleMenu (Menu menu) =
     Menu { menu | state = toggle menu.state }
 
+
 closeMenu : Menu msg -> Menu msg
 closeMenu (Menu menu) =
     Menu { menu | state = Closed }
+
 
 closeSubMenus : Menu msg -> Menu msg
 closeSubMenus (Menu menu) =
@@ -263,7 +265,8 @@ closeSubMenus (Menu menu) =
 
 closeMenuAndSubMenus : Menu msg -> Menu msg
 closeMenuAndSubMenus =
-   closeSubMenus >> closeMenu
+    closeSubMenus >> closeMenu
+
 
 openMenu : Menu msg -> Menu msg
 openMenu (Menu menu) =
@@ -332,31 +335,31 @@ viewMenuItem (Config c) index item =
         liAttrs =
             noOpAttrs c.updateMenu c.li
     in
-    case item of
-        MenuSeparator ->
-            li ( (noOpAttrs c.updateMenu c.menuSeparator) ++ liAttrs )
-                [ hr [] [] ]
+        case item of
+            MenuSeparator ->
+                li ((noOpAttrs c.updateMenu c.menuSeparator) ++ liAttrs)
+                    [ hr [] [] ]
 
-        MenuLink title href ->
-            li ( (noOpAttrs c.updateMenu c.menuLink) ++ liAttrs )
-                [ viewMenuLink title href [] ]
+            MenuLink title href ->
+                li ((noOpAttrs c.updateMenu c.menuLink) ++ liAttrs)
+                    [ viewMenuLink title href [] ]
 
-        MenuAction title click ->
-            li ( (noOpAttrs c.updateMenu c.menuAction) ++ liAttrs )
-                [ viewMenuAction title click [] ]
+            MenuAction title click ->
+                li ((noOpAttrs c.updateMenu c.menuAction) ++ liAttrs)
+                    [ viewMenuAction title click [] ]
 
-        MenuSubMenu (SubMenu { title, items, state }) ->
-            li ( (noOpAttrs c.updateMenu (c.menuSubMenu state)) ++ liAttrs )
-                ([ viewSubTitle (Config c) index title state
-                 ]
-                    ++ (case state of
-                            Open ->
-                                [ viewSubMenu (Config c) items ]
+            MenuSubMenu (SubMenu { title, items, state }) ->
+                li ((noOpAttrs c.updateMenu (c.menuSubMenu state)) ++ liAttrs)
+                    ([ viewSubTitle (Config c) index title state
+                     ]
+                        ++ (case state of
+                                Open ->
+                                    [ viewSubMenu (Config c) items ]
 
-                            Closed ->
-                                []
-                       )
-                )
+                                Closed ->
+                                    []
+                           )
+                    )
 
 
 viewSubTitle :
@@ -389,7 +392,7 @@ viewSubMenu :
     -> List (SubMenuItem msg)
     -> Html msg
 viewSubMenu (Config c) items =
-    ul ( noOpAttrs c.updateMenu c.ul )
+    ul (noOpAttrs c.updateMenu c.ul)
         (List.map (viewSubMenuItem (Config c)) items)
 
 
@@ -402,14 +405,14 @@ viewSubMenuItem (Config c) item =
         liAttrs =
             noOpAttrs c.updateMenu c.li
     in
-    case item of
-        SubLink title href ->
-            li ( (noOpAttrs c.updateMenu c.subMenuLink) ++ liAttrs )
-                [ viewMenuLink title href [] ]
+        case item of
+            SubLink title href ->
+                li ((noOpAttrs c.updateMenu c.subMenuLink) ++ liAttrs)
+                    [ viewMenuLink title href [] ]
 
-        SubAction title click ->
-            li ( (noOpAttrs c.updateMenu c.subMenuAction) ++ liAttrs )
-                [ viewMenuAction title click [] ]
+            SubAction title click ->
+                li ((noOpAttrs c.updateMenu c.subMenuAction) ++ liAttrs)
+                    [ viewMenuAction title click [] ]
 
 
 viewMenuLink : String -> String -> List (Attribute msg) -> Html msg
@@ -422,11 +425,11 @@ viewMenuLink title_ href_ attribs =
 viewMenuAction : String -> msg -> List (Attribute msg) -> Html msg
 viewMenuAction title_ msg attribs =
     div
-        ([ style [ ("cursor", "pointer") ]
+        ([ style [ ( "cursor", "pointer" ) ]
          , onWithOptions
-             "click"
-             { stopPropagation = False, preventDefault = True }
-             (JD.succeed msg)
+            "click"
+            { stopPropagation = False, preventDefault = True }
+            (JD.succeed msg)
          ]
             ++ attribs
         )
@@ -436,7 +439,7 @@ viewMenuAction title_ msg attribs =
 viewMenuTitleAction : String -> msg -> msg -> HtmlDetails msg -> Html msg
 viewMenuTitleAction title_ mouseMsg clickMsg arrow =
     div
-        [ style [ ("cursor", "pointer") ]
+        [ style [ ( "cursor", "pointer" ) ]
         , on "mouseover" (JD.succeed mouseMsg)
         , onWithOptions
             "click"
