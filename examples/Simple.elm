@@ -27,11 +27,11 @@ init =
 menu : Menu Msg
 menu =
     AccordionMenu.menu "Instruments"
-        [ AccordionMenu.link "Ukelele" "#/uke"
-        , AccordionMenu.separator
+        [ AccordionMenu.link "Ukelele" "#/uke" []
+        , AccordionMenu.separator styleSeparator
         , AccordionMenu.subMenu "Brass"
-            [ AccordionMenu.subMenuAction "Trumpet" (Select Trumpet)
-            , AccordionMenu.subMenuAction "Trombone" (Select Trombone)
+            [ AccordionMenu.subMenuAction "Trumpet" (Select Trumpet) []
+            , AccordionMenu.subMenuAction "Trombone" (Select Trombone) []
             ]
         ]
 
@@ -45,7 +45,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         Select selection ->
-            { model | selected = selection } |> andCloseMenu
+            { model | selected = Debug.log "Select" selection } |> andCloseMenu
 
         UpdateMenu submsg ->
             { model | menu = AccordionMenu.update submsg model.menu }
@@ -72,14 +72,9 @@ menuConfig =
         , menu = styleMenu
         , menuTitle = styleMenuTitle
         , menuList = styleMenuList
-        , menuSeparator = styleSeparator
-        , menuLink = []
-        , menuAction = []
         , menuSubMenu = (\_ -> [])
         , subMenuTitle = styleMenuTitle
         , subMenuList = []
-        , subMenuLink = []
-        , subMenuAction = []
         }
 
 
@@ -146,7 +141,7 @@ styleMenuList =
     ]
 
 
-styleSeparator : List (Attribute Never)
+styleSeparator : List (Attribute Msg)
 styleSeparator =
     [ style
         [ ( "border", "0" )

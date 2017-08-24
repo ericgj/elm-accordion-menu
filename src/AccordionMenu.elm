@@ -50,15 +50,12 @@ type SubMenu msg
 
 
 type MenuItem msg
-    = MenuSeparator
-    | MenuLink String String
-    | MenuAction String msg
+    = MenuItem (HtmlDetails msg)
     | MenuSubMenu (SubMenu msg)
 
 
 type SubMenuItem msg
-    = SubLink String String
-    | SubAction String msg
+    = SubMenuItem (HtmlDetails msg)
 
 
 type alias HtmlDetails msg =
@@ -77,14 +74,9 @@ type Config msg
         , menu : MenuState -> List (Attribute Never)
         , menuTitle : MenuState -> List (Attribute Never)
         , menuList : List (Attribute Never)
-        , menuSeparator : List (Attribute Never)
-        , menuLink : List (Attribute Never)
-        , menuAction : List (Attribute Never)
         , menuSubMenu : MenuState -> List (Attribute Never)
         , subMenuTitle : MenuState -> List (Attribute Never)
         , subMenuList : List (Attribute Never)
-        , subMenuLink : List (Attribute Never)
-        , subMenuAction : List (Attribute Never)
         }
 
 
@@ -97,19 +89,29 @@ menu title_ items =
     Menu { title = title_, items = items, state = Closed }
 
 
-separator : MenuItem msg
-separator =
-    MenuSeparator
+separator : List (Attribute msg) -> MenuItem msg
+separator attrs =
+    MenuItem
+        { attributes = []
+        , children = [ hr attrs [] ]
+        }
+
+link : String -> String -> List (Attribute msg) -> MenuItem msg
+link title_ href_ attrs =
+    MenuItem
+        { attributes = []
+        , children = 
+            [ viewMenuLink title_ href_ attrs ]
+        }
 
 
-link : String -> String -> MenuItem msg
-link =
-    MenuLink
-
-
-action : String -> msg -> MenuItem msg
-action =
-    MenuAction
+action : String -> msg -> List (Attribute msg) -> MenuItem msg
+action title_ msg attrs =
+    MenuItem
+        { attributes = []
+        , children =
+            [ viewMenuAction title_ msg attrs ]
+        }
 
 
 subMenu : String -> List (SubMenuItem msg) -> MenuItem msg
@@ -117,14 +119,21 @@ subMenu title_ items =
     MenuSubMenu (SubMenu { title = title_, items = items, state = Closed })
 
 
-subMenuLink : String -> String -> SubMenuItem msg
-subMenuLink =
-    SubLink
+subMenuLink : String -> String -> List (Attribute msg) -> SubMenuItem msg
+subMenuLink title_ href_ attrs =
+    SubMenuItem
+        { attributes = []
+        , children =
+            [ viewMenuLink title_ href_ attrs ]
+        }
 
-
-subMenuAction : String -> msg -> SubMenuItem msg
-subMenuAction =
-    SubAction
+subMenuAction : String -> msg -> List (Attribute msg) -> SubMenuItem msg
+subMenuAction title_ msg attrs =
+    SubMenuItem
+        { attributes = []
+        , children =
+            [ viewMenuAction title_ msg attrs ]
+        }
 
 
 
@@ -141,17 +150,12 @@ customConfig :
         , menu : MenuState -> List (Attribute Never)
         , menuTitle : MenuState -> List (Attribute Never)
         , menuList : List (Attribute Never)
-        , menuSeparator : List (Attribute Never)
-        , menuLink : List (Attribute Never)
-        , menuAction : List (Attribute Never)
         , menuSubMenu : MenuState -> List (Attribute Never)
         , subMenuTitle : MenuState -> List (Attribute Never)
         , subMenuList : List (Attribute Never)
-        , subMenuLink : List (Attribute Never)
-        , subMenuAction : List (Attribute Never)
     }
     -> Config msg
-customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuList, menuSeparator, menuLink, menuAction, menuSubMenu, subMenuTitle, subMenuList, subMenuLink, subMenuAction } =
+customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuList, menuSubMenu, subMenuTitle, subMenuList } =
     Config
         { updateMenu = updateMenu
         , openArrow = openArrow
@@ -161,14 +165,9 @@ customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuL
         , menu = menu
         , menuTitle = menuTitle
         , menuList = menuList
-        , menuSeparator = menuSeparator
-        , menuLink = menuLink
-        , menuAction = menuAction
         , menuSubMenu = menuSubMenu
         , subMenuTitle = subMenuTitle
         , subMenuList = subMenuList
-        , subMenuLink = subMenuLink
-        , subMenuAction = subMenuAction
         }
 
 
@@ -342,17 +341,8 @@ viewMenuItem (Config c) index item =
             noOpAttrs c.updateMenu c.li
     in
         case item of
-            MenuSeparator ->
-                li liAttrs
-                    [ hr (noOpAttrs c.updateMenu c.menuSeparator) [] ]
-
-            MenuLink title href ->
-                li ((noOpAttrs c.updateMenu c.menuLink) ++ liAttrs)
-                    [ viewMenuLink title href [] ]
-
-            MenuAction title click ->
-                li ((noOpAttrs c.updateMenu c.menuAction) ++ liAttrs)
-                    [ viewMenuAction title click [] ]
+            MenuItem { attributes, children } ->
+                li (liAttrs ++ attributes) children
 
             MenuSubMenu (SubMenu { title, items, state }) ->
                 li ((noOpAttrs c.updateMenu (c.menuSubMenu state)) ++ liAttrs)
@@ -412,13 +402,8 @@ viewSubMenuItem (Config c) item =
             noOpAttrs c.updateMenu c.li
     in
         case item of
-            SubLink title href ->
-                li ((noOpAttrs c.updateMenu c.subMenuLink) ++ liAttrs)
-                    [ viewMenuLink title href [] ]
-
-            SubAction title click ->
-                li ((noOpAttrs c.updateMenu c.subMenuAction) ++ liAttrs)
-                    [ viewMenuAction title click [] ]
+            SubMenuItem { attributes, children } ->
+                li (liAttrs ++ attributes) children
 
 
 viewMenuLink : String -> String -> List (Attribute msg) -> Html msg
