@@ -12,9 +12,11 @@ module AccordionMenu
         , separator
         , link
         , action
+        , customMenuItem
         , subMenu
         , subMenuLink
         , subMenuAction
+        , customSubMenuItem
         , toggleMenu
         , closeMenu
         , closeSubMenus
@@ -113,6 +115,13 @@ action title_ msg attrs =
             [ viewMenuAction title_ msg attrs ]
         }
 
+customMenuItem : List (Attribute msg) -> List (Html msg) -> MenuItem msg
+customMenuItem attributes children =
+    MenuItem
+        { attributes = attributes
+        , children = children
+        }
+
 
 subMenu : String -> List (SubMenuItem msg) -> MenuItem msg
 subMenu title_ items =
@@ -133,6 +142,13 @@ subMenuAction title_ msg attrs =
         { attributes = []
         , children =
             [ viewMenuAction title_ msg attrs ]
+        }
+
+customSubMenuItem : List (Attribute msg) -> List (Html msg) -> SubMenuItem msg
+customSubMenuItem attributes children =
+    SubMenuItem
+        { attributes = attributes
+        , children = children
         }
 
 
