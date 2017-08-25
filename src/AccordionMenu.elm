@@ -12,14 +12,26 @@ module AccordionMenu
         , separator
         , link
         , action
+        , customMenuItem
         , subMenu
         , subMenuLink
         , subMenuAction
+        , customSubMenuItem
         , toggleMenu
         , closeMenu
         , closeSubMenus
         , closeMenuAndSubMenus
         , openMenu
+        , setOpenArrow
+        , setCloseArrow
+        , addListAttributes
+        , addListItemAttributes
+        , staticMenuAttributes, menuAttributes
+        , staticMenuTitleAttributes, menuTitleAttributes
+        , addMenuListAttributes
+        , staticSubMenuAttributes, subMenuAttributes
+        , staticSubMenuTitleAttributes, subMenuTitleAttributes
+        , addSubMenuListAttributes
         )
 
 import Json.Decode as JD
@@ -80,7 +92,6 @@ type Config msg
         }
 
 
-
 -- MODEL
 
 
@@ -113,6 +124,13 @@ action title_ msg attrs =
             [ viewMenuAction title_ msg attrs ]
         }
 
+customMenuItem : List (Attribute msg) -> List (Html msg) -> MenuItem msg
+customMenuItem attributes children =
+    MenuItem
+        { attributes = attributes
+        , children = children
+        }
+
 
 subMenu : String -> List (SubMenuItem msg) -> MenuItem msg
 subMenu title_ items =
@@ -133,6 +151,13 @@ subMenuAction title_ msg attrs =
         { attributes = []
         , children =
             [ viewMenuAction title_ msg attrs ]
+        }
+
+customSubMenuItem : List (Attribute msg) -> List (Html msg) -> SubMenuItem msg
+customSubMenuItem attributes children =
+    SubMenuItem
+        { attributes = attributes
+        , children = children
         }
 
 
@@ -169,6 +194,62 @@ customConfig { updateMenu, openArrow, closeArrow, ul, li, menu, menuTitle, menuL
         , subMenuTitle = subMenuTitle
         , subMenuList = subMenuList
         }
+
+setOpenArrow : HtmlDetails Never -> Config msg -> Config msg
+setOpenArrow details (Config config) =
+    Config { config | openArrow = details }
+
+setCloseArrow : HtmlDetails Never -> Config msg -> Config msg
+setCloseArrow details (Config config) =
+    Config { config | closeArrow = details }
+
+addListAttributes : List (Attribute Never) -> Config msg -> Config msg
+addListAttributes attrs (Config config) =
+    customConfig { config | ul = config.ul ++ attrs }
+
+addListItemAttributes : List (Attribute Never) -> Config msg -> Config msg
+addListItemAttributes attrs (Config config) =
+    customConfig { config | li = config.li ++ attrs }
+
+menuAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
+menuAttributes func (Config config) =
+    customConfig { config | menu = func }
+
+staticMenuAttributes : List (Attribute Never) -> Config msg -> Config msg
+staticMenuAttributes attrs (Config config) =
+    customConfig { config | menu = (\_ -> attrs) }
+
+menuTitleAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
+menuTitleAttributes func (Config config) =
+    customConfig { config | menuTitle = func }
+
+staticMenuTitleAttributes : List (Attribute Never) -> Config msg -> Config msg
+staticMenuTitleAttributes attrs (Config config) =
+    customConfig { config | menuTitle = (\_ -> attrs) }
+
+addMenuListAttributes : List (Attribute Never) -> Config msg -> Config msg
+addMenuListAttributes attrs (Config config) =
+    customConfig { config | menuList = config.menuList ++ attrs }
+
+subMenuAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
+subMenuAttributes func (Config config) =
+    customConfig { config | menuSubMenu = func }
+
+staticSubMenuAttributes : List (Attribute Never) -> Config msg -> Config msg
+staticSubMenuAttributes attrs (Config config) =
+    customConfig { config | menuSubMenu = (\_ -> attrs) }
+
+subMenuTitleAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
+subMenuTitleAttributes func (Config config) =
+    customConfig { config | subMenuTitle = func }
+
+staticSubMenuTitleAttributes : List (Attribute Never) -> Config msg -> Config msg
+staticSubMenuTitleAttributes attrs (Config config) =
+    customConfig { config | subMenuTitle = (\_ -> attrs) }
+
+addSubMenuListAttributes : List (Attribute Never) -> Config msg -> Config msg
+addSubMenuListAttributes attrs (Config config) =
+    customConfig { config | subMenuList = config.subMenuList ++ attrs }
 
 
 
@@ -442,6 +523,8 @@ viewMenuTitleAction title_ mouseMsg clickMsg arrow =
         ]
 
 
+-- HELPERS
+
 mapNeverToMsg : msg -> Attribute Never -> Attribute msg
 mapNeverToMsg msg attr =
     Html.Attributes.map (\_ -> msg) attr
@@ -463,3 +546,9 @@ noOpHtmlDetails mapper details =
         | attributes = noOpAttrs mapper details.attributes
         , children = List.map (Html.map (\_ -> mapper NoOp)) details.children
     }
+
+addAttributes : List (Attribute msg) -> HtmlDetails msg -> HtmlDetails msg
+addAttributes attrs details =
+    { details | attributes = (details.attributes ++ attrs) }
+
+
