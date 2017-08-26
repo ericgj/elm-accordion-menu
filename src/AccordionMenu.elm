@@ -31,11 +31,15 @@ module AccordionMenu
         , setCloseArrow
         , addListAttributes
         , addListItemAttributes
-        , staticMenuAttributes, menuAttributes
-        , staticMenuTitleAttributes, menuTitleAttributes
+        , staticMenuAttributes
+        , menuAttributes
+        , staticMenuTitleAttributes
+        , menuTitleAttributes
         , addMenuListAttributes
-        , staticSubMenuAttributes, subMenuAttributes
-        , staticSubMenuTitleAttributes, subMenuTitleAttributes
+        , staticSubMenuAttributes
+        , subMenuAttributes
+        , staticSubMenuTitleAttributes
+        , subMenuTitleAttributes
         , addSubMenuListAttributes
         )
 
@@ -49,9 +53,11 @@ type MenuState
     = Open
     | Closed
 
+
 type MenuEventsOn
     = MouseEnter
     | Click
+
 
 type SubMenuBehavior
     = SingleOpen
@@ -106,6 +112,7 @@ type Config msg
         }
 
 
+
 -- MODEL
 
 
@@ -121,11 +128,12 @@ separator attrs =
         , children = [ hr attrs [] ]
         }
 
+
 link : String -> String -> List (Attribute msg) -> MenuItem msg
 link title_ href_ attrs =
     MenuItem
         { attributes = []
-        , children = 
+        , children =
             [ viewMenuLink title_ href_ attrs ]
         }
 
@@ -137,6 +145,7 @@ action msg title_ attrs =
         , children =
             [ viewMenuAction msg title_ attrs ]
         }
+
 
 customMenuItem : List (Attribute msg) -> List (Html msg) -> MenuItem msg
 customMenuItem attributes children =
@@ -159,6 +168,7 @@ subMenuLink title_ href_ attrs =
             [ viewMenuLink title_ href_ attrs ]
         }
 
+
 subMenuAction : msg -> String -> List (Attribute msg) -> SubMenuItem msg
 subMenuAction msg title_ attrs =
     SubMenuItem
@@ -166,6 +176,7 @@ subMenuAction msg title_ attrs =
         , children =
             [ viewMenuAction msg title_ attrs ]
         }
+
 
 customSubMenuItem : List (Attribute msg) -> List (Html msg) -> SubMenuItem msg
 customSubMenuItem attributes children =
@@ -211,67 +222,86 @@ customConfig { updateMenu, menuEventsOn, openArrow, closeArrow, ul, li, menu, me
         , subMenuList = subMenuList
         }
 
+
 setMenuEventsOnClick : Config msg -> Config msg
-setMenuEventsOnClick = setMenuEventsOn Click
+setMenuEventsOnClick =
+    setMenuEventsOn Click
+
 
 setMenuEventsOnMouseEnter : Config msg -> Config msg
-setMenuEventsOnMouseEnter = setMenuEventsOn MouseEnter
+setMenuEventsOnMouseEnter =
+    setMenuEventsOn MouseEnter
+
 
 setMenuEventsOn : MenuEventsOn -> Config msg -> Config msg
 setMenuEventsOn eventsOn (Config config) =
     Config { config | menuEventsOn = eventsOn }
 
+
 setOpenArrow : HtmlDetails Never -> Config msg -> Config msg
 setOpenArrow details (Config config) =
     Config { config | openArrow = details }
+
 
 setCloseArrow : HtmlDetails Never -> Config msg -> Config msg
 setCloseArrow details (Config config) =
     Config { config | closeArrow = details }
 
+
 addListAttributes : List (Attribute Never) -> Config msg -> Config msg
 addListAttributes attrs (Config config) =
     customConfig { config | ul = config.ul ++ attrs }
+
 
 addListItemAttributes : List (Attribute Never) -> Config msg -> Config msg
 addListItemAttributes attrs (Config config) =
     customConfig { config | li = config.li ++ attrs }
 
+
 menuAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
 menuAttributes func (Config config) =
     customConfig { config | menu = func }
+
 
 staticMenuAttributes : List (Attribute Never) -> Config msg -> Config msg
 staticMenuAttributes attrs (Config config) =
     customConfig { config | menu = (\_ -> attrs) }
 
+
 menuTitleAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
 menuTitleAttributes func (Config config) =
     customConfig { config | menuTitle = func }
+
 
 staticMenuTitleAttributes : List (Attribute Never) -> Config msg -> Config msg
 staticMenuTitleAttributes attrs (Config config) =
     customConfig { config | menuTitle = (\_ -> attrs) }
 
+
 addMenuListAttributes : List (Attribute Never) -> Config msg -> Config msg
 addMenuListAttributes attrs (Config config) =
     customConfig { config | menuList = config.menuList ++ attrs }
+
 
 subMenuAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
 subMenuAttributes func (Config config) =
     customConfig { config | menuSubMenu = func }
 
+
 staticSubMenuAttributes : List (Attribute Never) -> Config msg -> Config msg
 staticSubMenuAttributes attrs (Config config) =
     customConfig { config | menuSubMenu = (\_ -> attrs) }
+
 
 subMenuTitleAttributes : (MenuState -> List (Attribute Never)) -> Config msg -> Config msg
 subMenuTitleAttributes func (Config config) =
     customConfig { config | subMenuTitle = func }
 
+
 staticSubMenuTitleAttributes : List (Attribute Never) -> Config msg -> Config msg
 staticSubMenuTitleAttributes attrs (Config config) =
     customConfig { config | subMenuTitle = (\_ -> attrs) }
+
 
 addSubMenuListAttributes : List (Attribute Never) -> Config msg -> Config msg
 addSubMenuListAttributes attrs (Config config) =
@@ -364,19 +394,20 @@ closeMenu : Menu msg -> Menu msg
 closeMenu (Menu menu) =
     Menu { menu | state = Closed }
 
+
 closeSubMenu : Int -> Menu msg -> Menu msg
 closeSubMenu index (Menu menu) =
     let
         closeSubMenuAt i item =
             if i == index then
-              case item of
-                  MenuSubMenu (SubMenu submenu) ->
-                      MenuSubMenu (SubMenu { submenu | state = Closed })
+                case item of
+                    MenuSubMenu (SubMenu submenu) ->
+                        MenuSubMenu (SubMenu { submenu | state = Closed })
 
-                  _ ->
-                      item
+                    _ ->
+                        item
             else
-              item
+                item
     in
         Menu { menu | items = List.indexedMap closeSubMenuAt menu.items }
 
@@ -412,11 +443,11 @@ openMenu (Menu menu) =
 view : Config msg -> Menu msg -> Html msg
 view (Config c) (Menu { title, items, state }) =
     let
-        handlers = 
+        handlers =
             handleMenuEventsWith c.updateMenu c.menuEventsOn
     in
-        div 
-            ( handlers ++ (noOpAttrs c.updateMenu (c.menu state)))
+        div
+            (handlers ++ (noOpAttrs c.updateMenu (c.menu state)))
             ([ viewTitle (Config c) title state
              ]
                 ++ (case state of
@@ -470,7 +501,7 @@ viewMenuItem (Config c) index item =
         liAttrs =
             noOpAttrs c.updateMenu c.li
 
-        handlers index = 
+        handlers index =
             handleSubMenuEventsWith c.updateMenu c.menuEventsOn index
     in
         case item of
@@ -478,10 +509,10 @@ viewMenuItem (Config c) index item =
                 li (liAttrs ++ attributes) children
 
             MenuSubMenu (SubMenu { title, items, state }) ->
-                li 
-                    ( ( handlers index ) ++
-                      ( noOpAttrs c.updateMenu (c.menuSubMenu state) ) ++ 
-                      liAttrs 
+                li
+                    ((handlers index)
+                        ++ (noOpAttrs c.updateMenu (c.menuSubMenu state))
+                        ++ liAttrs
                     )
                     ([ viewSubTitle (Config c) index title state
                      ]
@@ -552,10 +583,10 @@ viewMenuAction : msg -> String -> List (Attribute msg) -> Html msg
 viewMenuAction msg title_ attribs =
     div
         ([ style [ ( "cursor", "pointer" ) ]
-         , onWithOptions 
-             "click"
-             { stopPropagation = False, preventDefault = True } 
-             (JD.succeed msg)
+         , onWithOptions
+            "click"
+            { stopPropagation = False, preventDefault = True }
+            (JD.succeed msg)
          ]
             ++ attribs
         )
@@ -572,7 +603,6 @@ viewMenuTitleAction title_ arrow =
         ]
 
 
-
 handleMenuEventsWith : (Msg -> msg) -> MenuEventsOn -> List (Attribute msg)
 handleMenuEventsWith updateMenu eventsOn =
     case eventsOn of
@@ -580,12 +610,14 @@ handleMenuEventsWith updateMenu eventsOn =
             [ on "mouseenter" (JD.succeed (OpenMenu |> updateMenu))
             , on "mouseleave" (JD.succeed (CloseMenu |> updateMenu))
             ]
+
         Click ->
-            [ onWithOptions 
-                  "click" 
-                  { stopPropagation = True, preventDefault = True } 
-                  (JD.succeed (ToggleMenuState |> updateMenu))
+            [ onWithOptions
+                "click"
+                { stopPropagation = True, preventDefault = True }
+                (JD.succeed (ToggleMenuState |> updateMenu))
             ]
+
 
 handleSubMenuEventsWith : (Msg -> msg) -> MenuEventsOn -> Int -> List (Attribute msg)
 handleSubMenuEventsWith updateMenu eventsOn index =
@@ -594,15 +626,18 @@ handleSubMenuEventsWith updateMenu eventsOn index =
             [ on "mouseenter" (JD.succeed (OpenSubMenu index |> updateMenu))
             , on "mouseleave" (JD.succeed (CloseSubMenu index |> updateMenu))
             ]
+
         Click ->
-            [ onWithOptions 
-                  "click" 
-                  { stopPropagation = True, preventDefault = True } 
-                  (JD.succeed (ToggleSubMenuState index |> updateMenu))
+            [ onWithOptions
+                "click"
+                { stopPropagation = True, preventDefault = True }
+                (JD.succeed (ToggleSubMenuState index |> updateMenu))
             ]
 
 
+
 -- HELPERS
+
 
 mapNeverToMsg : msg -> Attribute Never -> Attribute msg
 mapNeverToMsg msg attr =
@@ -626,8 +661,7 @@ noOpHtmlDetails mapper details =
         , children = List.map (Html.map (\_ -> mapper NoOp)) details.children
     }
 
+
 addAttributes : List (Attribute msg) -> HtmlDetails msg -> HtmlDetails msg
 addAttributes attrs details =
     { details | attributes = (details.attributes ++ attrs) }
-
-

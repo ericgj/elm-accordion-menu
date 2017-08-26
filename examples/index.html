@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Accordion-Menu Examples</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font: 16px/18px Calibri, Helvetica, Arial, sans-serif;
+      margin: 2em;
+    }
+
+    #page {
+      display: grid;
+      grid-template-rows: min-content min-content;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    #header {
+      grid-row: 1;
+      grid-column: 1 / span 2;
+      border-bottom: 1px solid rgba(0,0,0,0.3);
+      padding-bottom: 0.5em;
+    }
+
+    #main-left {
+      grid-row: 2;
+      grid-column: 1;
+    }
+
+    #main-right {
+      grid-row: 2;
+      grid-column: 2;
+    }
+
+  </style>
+</head>
+<body>
+  <script src="simple.js"></script>
+  <script>
+    var app = Elm.Simple.fullscreen();
+  </script>
+</body>
+</html>
+

@@ -1,12 +1,18 @@
 module Simple exposing (main)
 
-import Html exposing (Html, Attribute, text)
-import Html.Attributes exposing (style)
+import Html exposing (Html, Attribute, text, div, h1, p)
+import Html.Attributes exposing (style, class, id)
 import AccordionMenu exposing (Menu)
 import AccordionMenu.Style as Style
 
 
 type alias Model =
+    { clickMenu : SelectableMenu
+    , mouseMenu : SelectableMenu
+    }
+
+
+type alias SelectableMenu =
     { menu : Menu Msg
     , selected : Selection
     }
@@ -20,90 +26,177 @@ type Selection
 
 init : Model
 init =
-    { menu = menu
-    , selected = NoSelection
+    { clickMenu =
+        { menu = menu "click"
+        , selected = NoSelection
+        }
+    , mouseMenu =
+        { menu = menu "mouse"
+        , selected = NoSelection
+        }
     }
 
 
-menu : Menu Msg
-menu =
+menu : String -> Menu Msg
+menu id =
     AccordionMenu.menu "Instruments"
         [ AccordionMenu.link "Ukelele" "#/uke" []
         , AccordionMenu.separator [ style styleSeparator ]
         , AccordionMenu.subMenu "Brass"
-            [ AccordionMenu.subMenuAction (Select Trumpet) "Trumpet" []
-            , AccordionMenu.subMenuAction (Select Trombone) "Trombone" []
+            [ AccordionMenu.subMenuAction (Select id Trumpet) "Trumpet" []
+            , AccordionMenu.subMenuAction (Select id Trombone) "Trombone" []
             ]
         ]
 
 
 type Msg
-    = Select Selection
-    | UpdateMenu AccordionMenu.Msg
+    = Select String Selection
+    | UpdateMenu String AccordionMenu.Msg
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Select selection ->
-            { model | selected = Debug.log "Select" selection } |> andCloseMenu
+        Select id selection ->
+            let
+                _ =
+                    Debug.log "Select" ( id, selection )
+            in
+                case id of
+                    "mouse" ->
+                        { model | mouseMenu = selectMenuItem selection model.mouseMenu }
+                            |> andCloseMenu "mouse"
 
-        UpdateMenu submsg ->
-            { model | menu = AccordionMenu.update submsg model.menu }
+                    "click" ->
+                        { model | clickMenu = selectMenuItem selection model.clickMenu }
+                            |> andCloseMenu "click"
+
+                    _ ->
+                        model
+
+        UpdateMenu id submsg ->
+            case id of
+                "mouse" ->
+                    { model | mouseMenu = updateMenu submsg model.mouseMenu }
+
+                "click" ->
+                    { model | clickMenu = updateMenu submsg model.clickMenu }
+
+                _ ->
+                    model
 
 
-andCloseMenu : Model -> Model
-andCloseMenu model =
-    { model | menu = AccordionMenu.closeMenu model.menu }
+updateMenu : AccordionMenu.Msg -> SelectableMenu -> SelectableMenu
+updateMenu submsg menu =
+    { menu | menu = AccordionMenu.update submsg menu.menu }
+
+
+selectMenuItem : Selection -> SelectableMenu -> SelectableMenu
+selectMenuItem selection menu =
+    { menu | selected = selection }
+
+
+andCloseMenu : String -> Model -> Model
+andCloseMenu id model =
+    let
+        closeMenu menu =
+            { menu | menu = AccordionMenu.closeMenu menu.menu }
+    in
+        case id of
+            "mouse" ->
+                { model | mouseMenu = closeMenu model.mouseMenu }
+
+            "click" ->
+                { model | clickMenu = closeMenu model.clickMenu }
+
+            _ ->
+                model
 
 
 view : Model -> Html Msg
-view { menu } =
-    AccordionMenu.view menuConfig menu
-
-
-menuConfig : AccordionMenu.Config Msg
-menuConfig =
-    Style.blankConfig UpdateMenu
-        |> AccordionMenu.setMenuEventsOnClick
-        |> AccordionMenu.setOpenArrow 
-            { attributes = [ style styleArrows ], children = [ text "↓" ] }
-        |> AccordionMenu.setCloseArrow 
-            { attributes = [ style styleArrows ], children = [ text "↑" ] }
-        |> Style.resetListStyles
-        |> Style.absolutePositioned styleMenuList
-        |> Style.staticMenuStyles styleMenu
-        |> Style.menuTitleStyles styleMenuTitle
-        |> Style.menuListStyles styleMenuList
-        |> Style.subMenuTitleStyles styleMenuTitle
-
-
-styleMenu : List (String, String)
-styleMenu =
-        [ ( "width", "300px" )
-        , ( "margin", "1em" )
-        , ( "position", "relative" )
+view { clickMenu, mouseMenu } =
+    div [ id "page" ]
+        [ div [ id "header" ]
+            [ h1 []
+                [ text "Simple example" ]
+            , p []
+                [ text "The menu on the left responds to clicks. The menu on the right responds to mouse movement (mouseenter/mouseleave). The default is to respond to clicks." ]
+            ]
+        , div [ id "main-left" ]
+            [ viewMenu "click" clickMenu
+            ]
+        , div [ id "main-right" ]
+            [ viewMenu "mouse" mouseMenu
+            ]
         ]
 
-styleMenuTitle : AccordionMenu.MenuState -> List (String, String)
-styleMenuTitle state =
+
+viewMenu : String -> SelectableMenu -> Html Msg
+viewMenu id { menu } =
+    AccordionMenu.view
+        (case id of
+            "mouse" ->
+                menuConfig "mouse" "darkred"
+                    |> AccordionMenu.setMenuEventsOnMouseEnter
+
+            "click" ->
+                menuConfig "click" "darkgreen"
+
+            anythingElse ->
+                menuConfig anythingElse "darkgrey"
+        )
+        menu
+
+
+menuConfig : String -> String -> AccordionMenu.Config Msg
+menuConfig id color =
+    Style.blankConfig (UpdateMenu id)
+        |> AccordionMenu.setOpenArrow
+            { attributes = [ style styleArrows ], children = [ text "↓" ] }
+        |> AccordionMenu.setCloseArrow
+            { attributes = [ style styleArrows ], children = [ text "↑" ] }
+        |> Style.resetListStyles
+        |> Style.listItemStyles styleListItems
+        |> Style.absolutePositioned styleMenuList
+        |> Style.staticMenuStyles styleMenu
+        |> Style.menuTitleStyles (styleMenuTitle color)
+        |> Style.menuListStyles styleMenuList
+        |> Style.subMenuTitleStyles (styleMenuTitle color)
+
+
+styleListItems : List ( String, String )
+styleListItems =
+    [ ( "padding-left", "0.5rem" ) ]
+
+
+styleMenu : List ( String, String )
+styleMenu =
+    [ ( "width", "300px" )
+    , ( "margin", "0.5rem" )
+    , ( "position", "relative" )
+    ]
+
+
+styleMenuTitle : String -> AccordionMenu.MenuState -> List ( String, String )
+styleMenuTitle color state =
     case state of
         AccordionMenu.Closed ->
-                [ ( "border", "1px solid blue" )
-                , ( "border-radius", "5px" )
-                , ( "color", "blue" )
-                , ( "padding", "5px" )
-                ]
+            [ ( "border", ("1px solid " ++ color) )
+            , ( "border-radius", "5px" )
+            , ( "color", color )
+            , ( "padding", "5px" )
+            ]
 
         AccordionMenu.Open ->
-                [ ( "border", "1px solid white" )
-                , ( "border-radius", "5px" )
-                , ( "background-color", "blue" )
-                , ( "color", "white" )
-                , ( "padding", "5px" )
-                ]
+            [ ( "border", "1px solid white" )
+            , ( "border-radius", "5px" )
+            , ( "background-color", color )
+            , ( "color", "white" )
+            , ( "padding", "5px" )
+            ]
 
-styleMenuList : List (String, String)
+
+styleMenuList : List ( String, String )
 styleMenuList =
     [ ( "background-color", "#fff" )
     , ( "padding", "1rem" )
@@ -112,18 +205,17 @@ styleMenuList =
     ]
 
 
-
-styleSeparator : List (String, String)
+styleSeparator : List ( String, String )
 styleSeparator =
-        [ ( "border", "0" )
-        , ( "background", "rgba(0, 0, 0, 0.3)" )
-        , ( "height", "1px" )
-        ]
+    [ ( "border", "0" )
+    , ( "background", "rgba(0, 0, 0, 0.3)" )
+    , ( "height", "1px" )
+    ]
 
 
-styleArrows : List (String, String)
+styleArrows : List ( String, String )
 styleArrows =
-        [ ( "margin-left", "5px" ) ]
+    [ ( "margin-left", "5px" ) ]
 
 
 main : Program Never Model Msg
