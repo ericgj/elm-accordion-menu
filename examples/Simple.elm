@@ -44,7 +44,7 @@ menu : String -> Menu Msg
 menu id =
     AccordionMenu.menu "Instruments"
         [ AccordionMenu.link "Ukelele" "#/uke" []
-        , AccordionMenu.separator [ style styleSeparator ]
+        , AccordionMenu.separator "separator1" [ style styleSeparator ]
         , AccordionMenu.subMenu "Brass"
             [ AccordionMenu.subMenuAction (Select id Trumpet) "Trumpet" []
             , AccordionMenu.subMenuAction (Select id Trombone) "Trombone" []

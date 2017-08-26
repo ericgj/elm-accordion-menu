@@ -8260,6 +8260,10 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _elm_lang$html$Html_Keyed$node = _elm_lang$virtual_dom$VirtualDom$keyedNode;
+var _elm_lang$html$Html_Keyed$ol = _elm_lang$html$Html_Keyed$node('ol');
+var _elm_lang$html$Html_Keyed$ul = _elm_lang$html$Html_Keyed$node('ul');
+
 var _user$project$AccordionMenu$addAttributes = F2(
 	function (attrs, details) {
 		return _elm_lang$core$Native_Utils.update(
@@ -8407,12 +8411,15 @@ var _user$project$AccordionMenu$openMenu = function (_p7) {
 var _user$project$AccordionMenu$SubMenu = function (a) {
 	return {ctor: 'SubMenu', _0: a};
 };
-var _user$project$AccordionMenu$MenuSubMenu = function (a) {
-	return {ctor: 'MenuSubMenu', _0: a};
-};
+var _user$project$AccordionMenu$MenuSubMenu = F2(
+	function (a, b) {
+		return {ctor: 'MenuSubMenu', _0: a, _1: b};
+	});
 var _user$project$AccordionMenu$subMenu = F2(
 	function (title_, items) {
-		return _user$project$AccordionMenu$MenuSubMenu(
+		return A2(
+			_user$project$AccordionMenu$MenuSubMenu,
+			title_,
 			_user$project$AccordionMenu$SubMenu(
 				{title: title_, items: items, state: _user$project$AccordionMenu$Closed}));
 	});
@@ -8425,10 +8432,12 @@ var _user$project$AccordionMenu$closeSubMenu = F2(
 				if (_elm_lang$core$Native_Utils.eq(i, index)) {
 					var _p11 = item;
 					if (_p11.ctor === 'MenuSubMenu') {
-						return _user$project$AccordionMenu$MenuSubMenu(
+						return A2(
+							_user$project$AccordionMenu$MenuSubMenu,
+							_p11._0,
 							_user$project$AccordionMenu$SubMenu(
 								_elm_lang$core$Native_Utils.update(
-									_p11._0._0,
+									_p11._1._0,
 									{state: _user$project$AccordionMenu$Closed})));
 					} else {
 						return item;
@@ -8450,10 +8459,12 @@ var _user$project$AccordionMenu$closeSubMenus = function (_p13) {
 	var closeSubMenu = function (item) {
 		var _p15 = item;
 		if (_p15.ctor === 'MenuSubMenu') {
-			return _user$project$AccordionMenu$MenuSubMenu(
+			return A2(
+				_user$project$AccordionMenu$MenuSubMenu,
+				_p15._0,
 				_user$project$AccordionMenu$SubMenu(
 					_elm_lang$core$Native_Utils.update(
-						_p15._0._0,
+						_p15._1._0,
 						{state: _user$project$AccordionMenu$Closed})));
 		} else {
 			return item;
@@ -8483,8 +8494,10 @@ var _user$project$AccordionMenu$update = F2(
 						if (_elm_lang$core$Native_Utils.eq(i, index)) {
 							var _p20 = item;
 							if (_p20.ctor === 'MenuSubMenu') {
-								var _p21 = _p20._0._0;
-								return _user$project$AccordionMenu$MenuSubMenu(
+								var _p21 = _p20._1._0;
+								return A2(
+									_user$project$AccordionMenu$MenuSubMenu,
+									_p20._0,
 									_user$project$AccordionMenu$SubMenu(
 										_elm_lang$core$Native_Utils.update(
 											_p21,
@@ -8527,10 +8540,12 @@ var _user$project$AccordionMenu$update = F2(
 						if (_elm_lang$core$Native_Utils.eq(i, index)) {
 							var _p22 = item;
 							if (_p22.ctor === 'MenuSubMenu') {
-								return _user$project$AccordionMenu$MenuSubMenu(
+								return A2(
+									_user$project$AccordionMenu$MenuSubMenu,
+									_p22._0,
 									_user$project$AccordionMenu$SubMenu(
 										_elm_lang$core$Native_Utils.update(
-											_p22._0._0,
+											_p22._1._0,
 											{state: _user$project$AccordionMenu$Open})));
 							} else {
 								return item;
@@ -8554,26 +8569,32 @@ var _user$project$AccordionMenu$closeMenuAndSubMenus = function (_p24) {
 	return _user$project$AccordionMenu$closeMenu(
 		_user$project$AccordionMenu$closeSubMenus(_p24));
 };
-var _user$project$AccordionMenu$MenuItem = function (a) {
-	return {ctor: 'MenuItem', _0: a};
-};
-var _user$project$AccordionMenu$separator = function (attrs) {
-	return _user$project$AccordionMenu$MenuItem(
-		{
-			attributes: {ctor: '[]'},
-			children: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$hr,
-					attrs,
-					{ctor: '[]'}),
-				_1: {ctor: '[]'}
-			}
-		});
-};
+var _user$project$AccordionMenu$MenuItem = F2(
+	function (a, b) {
+		return {ctor: 'MenuItem', _0: a, _1: b};
+	});
+var _user$project$AccordionMenu$separator = F2(
+	function (key, attrs) {
+		return A2(
+			_user$project$AccordionMenu$MenuItem,
+			key,
+			{
+				attributes: {ctor: '[]'},
+				children: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$hr,
+						attrs,
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 var _user$project$AccordionMenu$link = F3(
 	function (title_, href_, attrs) {
-		return _user$project$AccordionMenu$MenuItem(
+		return A2(
+			_user$project$AccordionMenu$MenuItem,
+			title_,
 			{
 				attributes: {ctor: '[]'},
 				children: {
@@ -8585,7 +8606,9 @@ var _user$project$AccordionMenu$link = F3(
 	});
 var _user$project$AccordionMenu$action = F3(
 	function (msg, title_, attrs) {
-		return _user$project$AccordionMenu$MenuItem(
+		return A2(
+			_user$project$AccordionMenu$MenuItem,
+			title_,
 			{
 				attributes: {ctor: '[]'},
 				children: {
@@ -8595,17 +8618,22 @@ var _user$project$AccordionMenu$action = F3(
 				}
 			});
 	});
-var _user$project$AccordionMenu$customMenuItem = F2(
-	function (attributes, children) {
-		return _user$project$AccordionMenu$MenuItem(
+var _user$project$AccordionMenu$customMenuItem = F3(
+	function (key, attributes, children) {
+		return A2(
+			_user$project$AccordionMenu$MenuItem,
+			key,
 			{attributes: attributes, children: children});
 	});
-var _user$project$AccordionMenu$SubMenuItem = function (a) {
-	return {ctor: 'SubMenuItem', _0: a};
-};
+var _user$project$AccordionMenu$SubMenuItem = F2(
+	function (a, b) {
+		return {ctor: 'SubMenuItem', _0: a, _1: b};
+	});
 var _user$project$AccordionMenu$subMenuLink = F3(
 	function (title_, href_, attrs) {
-		return _user$project$AccordionMenu$SubMenuItem(
+		return A2(
+			_user$project$AccordionMenu$SubMenuItem,
+			title_,
 			{
 				attributes: {ctor: '[]'},
 				children: {
@@ -8617,7 +8645,9 @@ var _user$project$AccordionMenu$subMenuLink = F3(
 	});
 var _user$project$AccordionMenu$subMenuAction = F3(
 	function (msg, title_, attrs) {
-		return _user$project$AccordionMenu$SubMenuItem(
+		return A2(
+			_user$project$AccordionMenu$SubMenuItem,
+			title_,
 			{
 				attributes: {ctor: '[]'},
 				children: {
@@ -8627,9 +8657,11 @@ var _user$project$AccordionMenu$subMenuAction = F3(
 				}
 			});
 	});
-var _user$project$AccordionMenu$customSubMenuItem = F2(
-	function (attributes, children) {
-		return _user$project$AccordionMenu$SubMenuItem(
+var _user$project$AccordionMenu$customSubMenuItem = F3(
+	function (key, attributes, children) {
+		return A2(
+			_user$project$AccordionMenu$SubMenuItem,
+			key,
 			{attributes: attributes, children: children});
 	});
 var _user$project$AccordionMenu$Config = function (a) {
@@ -8813,17 +8845,21 @@ var _user$project$AccordionMenu$viewSubMenuItem = F2(
 		var _p69 = _p67._0;
 		var liAttrs = A2(_user$project$AccordionMenu$noOpAttrs, _p69.updateMenu, _p69.li);
 		var _p68 = item;
-		return A2(
-			_elm_lang$html$Html$li,
-			A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p68._0.attributes),
-			_p68._0.children);
+		return {
+			ctor: '_Tuple2',
+			_0: _p68._0,
+			_1: A2(
+				_elm_lang$html$Html$li,
+				A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p68._1.attributes),
+				_p68._1.children)
+		};
 	});
 var _user$project$AccordionMenu$viewSubMenu = F2(
 	function (_p70, items) {
 		var _p71 = _p70;
 		var _p72 = _p71._0;
 		return A2(
-			_elm_lang$html$Html$ul,
+			_elm_lang$html$Html_Keyed$ul,
 			A2(
 				_user$project$AccordionMenu$noOpAttrs,
 				_p72.updateMenu,
@@ -8962,51 +8998,59 @@ var _user$project$AccordionMenu$viewMenuItem = F3(
 		var liAttrs = A2(_user$project$AccordionMenu$noOpAttrs, _p88.updateMenu, _p88.li);
 		var _p85 = item;
 		if (_p85.ctor === 'MenuItem') {
-			return A2(
-				_elm_lang$html$Html$li,
-				A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p85._0.attributes),
-				_p85._0.children);
+			return {
+				ctor: '_Tuple2',
+				_0: _p85._0,
+				_1: A2(
+					_elm_lang$html$Html$li,
+					A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p85._1.attributes),
+					_p85._1.children)
+			};
 		} else {
-			var _p87 = _p85._0._0.state;
-			return A2(
-				_elm_lang$html$Html$li,
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					handlers(index),
+			var _p87 = _p85._1._0.state;
+			return {
+				ctor: '_Tuple2',
+				_0: _p85._0,
+				_1: A2(
+					_elm_lang$html$Html$li,
 					A2(
 						_elm_lang$core$Basics_ops['++'],
+						handlers(index),
 						A2(
-							_user$project$AccordionMenu$noOpAttrs,
-							_p88.updateMenu,
-							_p88.menuSubMenu(_p87)),
-						liAttrs)),
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					{
-						ctor: '::',
-						_0: A4(
-							_user$project$AccordionMenu$viewSubTitle,
-							_user$project$AccordionMenu$Config(_p88),
-							index,
-							_p85._0._0.title,
-							_p87),
-						_1: {ctor: '[]'}
-					},
-					function () {
-						var _p86 = _p87;
-						if (_p86.ctor === 'Open') {
-							return {
-								ctor: '::',
-								_0: A2(
-									_user$project$AccordionMenu$viewSubMenu,
-									_user$project$AccordionMenu$Config(_p88),
-									_p85._0._0.items),
-								_1: {ctor: '[]'}
-							};
-						} else {
-							return {ctor: '[]'};
-						}
-					}()));
+							_elm_lang$core$Basics_ops['++'],
+							A2(
+								_user$project$AccordionMenu$noOpAttrs,
+								_p88.updateMenu,
+								_p88.menuSubMenu(_p87)),
+							liAttrs)),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: A4(
+								_user$project$AccordionMenu$viewSubTitle,
+								_user$project$AccordionMenu$Config(_p88),
+								index,
+								_p85._1._0.title,
+								_p87),
+							_1: {ctor: '[]'}
+						},
+						function () {
+							var _p86 = _p87;
+							if (_p86.ctor === 'Open') {
+								return {
+									ctor: '::',
+									_0: A2(
+										_user$project$AccordionMenu$viewSubMenu,
+										_user$project$AccordionMenu$Config(_p88),
+										_p85._1._0.items),
+									_1: {ctor: '[]'}
+								};
+							} else {
+								return {ctor: '[]'};
+							}
+						}()))
+			};
 		}
 	});
 var _user$project$AccordionMenu$viewMenu = F2(
@@ -9014,7 +9058,7 @@ var _user$project$AccordionMenu$viewMenu = F2(
 		var _p90 = _p89;
 		var _p91 = _p90._0;
 		return A2(
-			_elm_lang$html$Html$ul,
+			_elm_lang$html$Html_Keyed$ul,
 			A2(
 				_user$project$AccordionMenu$noOpAttrs,
 				_p91.updateMenu,
@@ -9908,7 +9952,9 @@ var _user$project$Simple$menu = function (id) {
 				{ctor: '[]'}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$AccordionMenu$separator(
+				_0: A2(
+					_user$project$AccordionMenu$separator,
+					'separator1',
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$style(_user$project$Simple$styleSeparator),

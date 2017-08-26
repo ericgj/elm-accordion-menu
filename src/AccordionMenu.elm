@@ -2,6 +2,8 @@ module AccordionMenu
     exposing
         ( Menu
         , SubMenu
+        , MenuItem
+        , SubMenuItem
         , MenuState(..)
         , MenuEventsOn(..)
         , SubMenuBehavior(..)
@@ -47,6 +49,7 @@ import Json.Decode as JD
 import Html exposing (..)
 import Html.Attributes exposing (title, href, style)
 import Html.Events exposing (onWithOptions, on)
+import Html.Keyed
 
 
 type MenuState
@@ -81,12 +84,12 @@ type SubMenu msg
 
 
 type MenuItem msg
-    = MenuItem (HtmlDetails msg)
-    | MenuSubMenu (SubMenu msg)
+    = MenuItem String (HtmlDetails msg)
+    | MenuSubMenu String (SubMenu msg)
 
 
 type SubMenuItem msg
-    = SubMenuItem (HtmlDetails msg)
+    = SubMenuItem String (HtmlDetails msg)
 
 
 type alias HtmlDetails msg =
@@ -121,9 +124,10 @@ menu title_ items =
     Menu { title = title_, items = items, state = Closed }
 
 
-separator : List (Attribute msg) -> MenuItem msg
-separator attrs =
+separator : String -> List (Attribute msg) -> MenuItem msg
+separator key attrs =
     MenuItem
+        key
         { attributes = []
         , children = [ hr attrs [] ]
         }
@@ -132,6 +136,7 @@ separator attrs =
 link : String -> String -> List (Attribute msg) -> MenuItem msg
 link title_ href_ attrs =
     MenuItem
+        title_
         { attributes = []
         , children =
             [ viewMenuLink title_ href_ attrs ]
@@ -141,15 +146,17 @@ link title_ href_ attrs =
 action : msg -> String -> List (Attribute msg) -> MenuItem msg
 action msg title_ attrs =
     MenuItem
+        title_
         { attributes = []
         , children =
             [ viewMenuAction msg title_ attrs ]
         }
 
 
-customMenuItem : List (Attribute msg) -> List (Html msg) -> MenuItem msg
-customMenuItem attributes children =
+customMenuItem : String -> List (Attribute msg) -> List (Html msg) -> MenuItem msg
+customMenuItem key attributes children =
     MenuItem
+        key
         { attributes = attributes
         , children = children
         }
@@ -157,12 +164,15 @@ customMenuItem attributes children =
 
 subMenu : String -> List (SubMenuItem msg) -> MenuItem msg
 subMenu title_ items =
-    MenuSubMenu (SubMenu { title = title_, items = items, state = Closed })
+    MenuSubMenu
+        title_
+        (SubMenu { title = title_, items = items, state = Closed })
 
 
 subMenuLink : String -> String -> List (Attribute msg) -> SubMenuItem msg
 subMenuLink title_ href_ attrs =
     SubMenuItem
+        title_
         { attributes = []
         , children =
             [ viewMenuLink title_ href_ attrs ]
@@ -172,15 +182,17 @@ subMenuLink title_ href_ attrs =
 subMenuAction : msg -> String -> List (Attribute msg) -> SubMenuItem msg
 subMenuAction msg title_ attrs =
     SubMenuItem
+        title_
         { attributes = []
         , children =
             [ viewMenuAction msg title_ attrs ]
         }
 
 
-customSubMenuItem : List (Attribute msg) -> List (Html msg) -> SubMenuItem msg
-customSubMenuItem attributes children =
+customSubMenuItem : String -> List (Attribute msg) -> List (Html msg) -> SubMenuItem msg
+customSubMenuItem key attributes children =
     SubMenuItem
+        key
         { attributes = attributes
         , children = children
         }
@@ -337,8 +349,10 @@ update msg (Menu menu) =
                 toggleItemAt index i item =
                     if i == index then
                         case item of
-                            MenuSubMenu (SubMenu submenu) ->
-                                MenuSubMenu (SubMenu { submenu | state = toggle submenu.state })
+                            MenuSubMenu key (SubMenu submenu) ->
+                                MenuSubMenu
+                                    key
+                                    (SubMenu { submenu | state = toggle submenu.state })
 
                             _ ->
                                 item
@@ -364,8 +378,10 @@ update msg (Menu menu) =
                 openItemAt index i item =
                     if i == index then
                         case item of
-                            MenuSubMenu (SubMenu submenu) ->
-                                MenuSubMenu (SubMenu { submenu | state = Open })
+                            MenuSubMenu key (SubMenu submenu) ->
+                                MenuSubMenu
+                                    key
+                                    (SubMenu { submenu | state = Open })
 
                             _ ->
                                 item
@@ -401,8 +417,8 @@ closeSubMenu index (Menu menu) =
         closeSubMenuAt i item =
             if i == index then
                 case item of
-                    MenuSubMenu (SubMenu submenu) ->
-                        MenuSubMenu (SubMenu { submenu | state = Closed })
+                    MenuSubMenu key (SubMenu submenu) ->
+                        MenuSubMenu key (SubMenu { submenu | state = Closed })
 
                     _ ->
                         item
@@ -417,8 +433,8 @@ closeSubMenus (Menu menu) =
     let
         closeSubMenu item =
             case item of
-                MenuSubMenu (SubMenu submenu) ->
-                    MenuSubMenu (SubMenu { submenu | state = Closed })
+                MenuSubMenu key (SubMenu submenu) ->
+                    MenuSubMenu key (SubMenu { submenu | state = Closed })
 
                 _ ->
                     item
@@ -487,7 +503,7 @@ viewMenu :
     -> List (MenuItem msg)
     -> Html msg
 viewMenu (Config c) menuItems =
-    ul (noOpAttrs c.updateMenu (c.ul ++ c.menuList))
+    Html.Keyed.ul (noOpAttrs c.updateMenu (c.ul ++ c.menuList))
         (List.indexedMap (viewMenuItem (Config c)) menuItems)
 
 
@@ -495,7 +511,7 @@ viewMenuItem :
     Config msg
     -> Int
     -> MenuItem msg
-    -> Html msg
+    -> ( String, Html msg )
 viewMenuItem (Config c) index item =
     let
         liAttrs =
@@ -505,11 +521,14 @@ viewMenuItem (Config c) index item =
             handleSubMenuEventsWith c.updateMenu c.menuEventsOn index
     in
         case item of
-            MenuItem { attributes, children } ->
-                li (liAttrs ++ attributes) children
+            MenuItem key { attributes, children } ->
+                ( key
+                , li (liAttrs ++ attributes) children
+                )
 
-            MenuSubMenu (SubMenu { title, items, state }) ->
-                li
+            MenuSubMenu key (SubMenu { title, items, state }) ->
+                ( key
+                , li
                     ((handlers index)
                         ++ (noOpAttrs c.updateMenu (c.menuSubMenu state))
                         ++ liAttrs
@@ -524,6 +543,7 @@ viewMenuItem (Config c) index item =
                                     []
                            )
                     )
+                )
 
 
 viewSubTitle :
@@ -554,22 +574,24 @@ viewSubMenu :
     -> List (SubMenuItem msg)
     -> Html msg
 viewSubMenu (Config c) items =
-    ul (noOpAttrs c.updateMenu (c.ul ++ c.subMenuList))
+    Html.Keyed.ul (noOpAttrs c.updateMenu (c.ul ++ c.subMenuList))
         (List.map (viewSubMenuItem (Config c)) items)
 
 
 viewSubMenuItem :
     Config msg
     -> SubMenuItem msg
-    -> Html msg
+    -> ( String, Html msg )
 viewSubMenuItem (Config c) item =
     let
         liAttrs =
             noOpAttrs c.updateMenu c.li
     in
         case item of
-            SubMenuItem { attributes, children } ->
-                li (liAttrs ++ attributes) children
+            SubMenuItem key { attributes, children } ->
+                ( key
+                , li (liAttrs ++ attributes) children
+                )
 
 
 viewMenuLink : String -> String -> List (Attribute msg) -> Html msg
