@@ -9578,7 +9578,11 @@ var _user$project$Simple$styleMenuTitle = F2(
 						_1: {
 							ctor: '::',
 							_0: {ctor: '_Tuple2', _0: 'padding', _1: '5px'},
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '0.25rem'},
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -9599,7 +9603,11 @@ var _user$project$Simple$styleMenuTitle = F2(
 							_1: {
 								ctor: '::',
 								_0: {ctor: '_Tuple2', _0: 'padding', _1: '5px'},
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '0.25rem'},
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
@@ -9728,6 +9736,9 @@ var _user$project$Simple$SelectableMenu = F2(
 	function (a, b) {
 		return {menu: a, selected: b};
 	});
+var _user$project$Simple$Piccolo = {ctor: 'Piccolo'};
+var _user$project$Simple$Flute = {ctor: 'Flute'};
+var _user$project$Simple$Oboe = {ctor: 'Oboe'};
 var _user$project$Simple$Trombone = {ctor: 'Trombone'};
 var _user$project$Simple$Trumpet = {ctor: 'Trumpet'};
 var _user$project$Simple$NoSelection = {ctor: 'NoSelection'};
@@ -9925,7 +9936,38 @@ var _user$project$Simple$menu = function (id) {
 								_1: {ctor: '[]'}
 							}
 						}),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_user$project$AccordionMenu$subMenu,
+							'Reed',
+							{
+								ctor: '::',
+								_0: A3(
+									_user$project$AccordionMenu$subMenuAction,
+									A2(_user$project$Simple$Select, id, _user$project$Simple$Oboe),
+									'Oboe',
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A3(
+										_user$project$AccordionMenu$subMenuAction,
+										A2(_user$project$Simple$Select, id, _user$project$Simple$Flute),
+										'Flute',
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: A3(
+											_user$project$AccordionMenu$subMenuAction,
+											A2(_user$project$Simple$Select, id, _user$project$Simple$Piccolo),
+											'Piccolo',
+											{ctor: '[]'}),
+										_1: {ctor: '[]'}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});

@@ -22,6 +22,9 @@ type Selection
     = NoSelection
     | Trumpet
     | Trombone
+    | Oboe
+    | Flute
+    | Piccolo
 
 
 init : Model
@@ -45,6 +48,11 @@ menu id =
         , AccordionMenu.subMenu "Brass"
             [ AccordionMenu.subMenuAction (Select id Trumpet) "Trumpet" []
             , AccordionMenu.subMenuAction (Select id Trombone) "Trombone" []
+            ]
+        , AccordionMenu.subMenu "Reed"
+            [ AccordionMenu.subMenuAction (Select id Oboe) "Oboe" []
+            , AccordionMenu.subMenuAction (Select id Flute) "Flute" []
+            , AccordionMenu.subMenuAction (Select id Piccolo) "Piccolo" []
             ]
         ]
 
@@ -185,6 +193,7 @@ styleMenuTitle color state =
             , ( "border-radius", "5px" )
             , ( "color", color )
             , ( "padding", "5px" )
+            , ( "margin-top", "0.25rem" )
             ]
 
         AccordionMenu.Open ->
@@ -193,6 +202,7 @@ styleMenuTitle color state =
             , ( "background-color", color )
             , ( "color", "white" )
             , ( "padding", "5px" )
+            , ( "margin-top", "0.25rem" )
             ]
 
 
