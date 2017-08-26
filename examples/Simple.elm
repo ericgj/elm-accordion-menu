@@ -31,8 +31,8 @@ menu =
         [ AccordionMenu.link "Ukelele" "#/uke" []
         , AccordionMenu.separator [ style styleSeparator ]
         , AccordionMenu.subMenu "Brass"
-            [ AccordionMenu.subMenuAction "Trumpet" (Select Trumpet) []
-            , AccordionMenu.subMenuAction "Trombone" (Select Trombone) []
+            [ AccordionMenu.subMenuAction (Select Trumpet) "Trumpet" []
+            , AccordionMenu.subMenuAction (Select Trombone) "Trombone" []
             ]
         ]
 
@@ -65,6 +65,7 @@ view { menu } =
 menuConfig : AccordionMenu.Config Msg
 menuConfig =
     Style.blankConfig UpdateMenu
+        |> AccordionMenu.setMenuEventsOnClick
         |> AccordionMenu.setOpenArrow 
             { attributes = [ style styleArrows ], children = [ text "↓" ] }
         |> AccordionMenu.setCloseArrow 
@@ -106,7 +107,7 @@ styleMenuList : List (String, String)
 styleMenuList =
     [ ( "background-color", "#fff" )
     , ( "padding", "1rem" )
-    , ( "transform", "translate(0px, 35px)" )
+    , ( "transform", "translate(0px, 30px)" )
     , ( "box-shadow", "0 0 5px rgba(0,0,0,0.3)" )
     ]
 

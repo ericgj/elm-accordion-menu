@@ -38,6 +38,7 @@ blankConfig : (Msg -> msg) -> Config msg
 blankConfig updateMenu =
     customConfig
         { updateMenu = updateMenu
+        , menuEventsOn = Click
         , openArrow = { attributes = [], children = [] }
         , closeArrow = { attributes = [], children = [] }
         , ul = []
