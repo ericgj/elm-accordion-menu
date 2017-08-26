@@ -65,7 +65,7 @@ module AccordionMenu
     grained styling via inline styles or classes.
 
 See [Simple example](https://github.com/ericgj/elm-accordion-menu/blob/master/examples/Simple.elm)
-for basic usage.
+for basic usage, and [live demo](https://ericgj.github.io/elm-accordion-menu/).
 
 
 # Menu state
