@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Accordion-style submenus",
-    "repository": "https://github.com/user/project.git",
+    "repository": "https://github.com/ericgj/elm-accordion-menu.git",
     "license": "BSD3",
     "source-directories": [
         "src"
