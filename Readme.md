@@ -5,7 +5,7 @@ An Elm library for designing expandable menus or other "accordion" interfaces.
 ## Examples
 
 [Simple example](https://github.com/ericgj/elm-accordion-menu/blob/master/examples/Simple.elm)
-
+ | 
 [Live demo](https://ericgj.github.io/elm-accordion-menu/)
 
 
