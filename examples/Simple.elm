@@ -145,7 +145,7 @@ viewMenu id { menu } =
         (case id of
             "mouse" ->
                 menuConfig "mouse" "darkred"
-                    |> AccordionMenu.setMenuEventsOnMouseEnter
+                    |> AccordionMenu.setMenuEventsOnHover
 
             "click" ->
                 menuConfig "click" "darkgreen"
@@ -158,7 +158,7 @@ viewMenu id { menu } =
 
 menuConfig : String -> String -> AccordionMenu.Config Msg
 menuConfig id color =
-    Style.blankConfig (UpdateMenu id)
+    AccordionMenu.blankConfig (UpdateMenu id)
         |> AccordionMenu.setOpenArrow
             { attributes = [ style styleArrows ], children = [ text "↓" ] }
         |> AccordionMenu.setCloseArrow
@@ -210,7 +210,7 @@ styleMenuList : List ( String, String )
 styleMenuList =
     [ ( "background-color", "#fff" )
     , ( "padding", "1rem" )
-    , ( "transform", "translate(0px, 30px)" )
+    , ( "top", "30px" )
     , ( "box-shadow", "0 0 5px rgba(0,0,0,0.3)" )
     ]
 

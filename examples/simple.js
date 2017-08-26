@@ -8373,9 +8373,7 @@ var _user$project$AccordionMenu$toggle = function (mstate) {
 	}
 };
 var _user$project$AccordionMenu$Click = {ctor: 'Click'};
-var _user$project$AccordionMenu$MouseEnter = {ctor: 'MouseEnter'};
-var _user$project$AccordionMenu$ManyOpen = {ctor: 'ManyOpen'};
-var _user$project$AccordionMenu$SingleOpen = {ctor: 'SingleOpen'};
+var _user$project$AccordionMenu$Hover = {ctor: 'Hover'};
 var _user$project$AccordionMenu$Menu = function (a) {
 	return {ctor: 'Menu', _0: a};
 };
@@ -8672,154 +8670,185 @@ var _user$project$AccordionMenu$customConfig = function (_p25) {
 	return _user$project$AccordionMenu$Config(
 		{updateMenu: _p26.updateMenu, menuEventsOn: _p26.menuEventsOn, openArrow: _p26.openArrow, closeArrow: _p26.closeArrow, ul: _p26.ul, li: _p26.li, menu: _p26.menu, menuTitle: _p26.menuTitle, menuList: _p26.menuList, menuSubMenu: _p26.menuSubMenu, subMenuTitle: _p26.subMenuTitle, subMenuList: _p26.subMenuList});
 };
+var _user$project$AccordionMenu$blankConfig = function (updateMenu) {
+	return _user$project$AccordionMenu$customConfig(
+		{
+			updateMenu: updateMenu,
+			menuEventsOn: _user$project$AccordionMenu$Click,
+			openArrow: {
+				attributes: {ctor: '[]'},
+				children: {ctor: '[]'}
+			},
+			closeArrow: {
+				attributes: {ctor: '[]'},
+				children: {ctor: '[]'}
+			},
+			ul: {ctor: '[]'},
+			li: {ctor: '[]'},
+			menu: function (_p27) {
+				return {ctor: '[]'};
+			},
+			menuTitle: function (_p28) {
+				return {ctor: '[]'};
+			},
+			menuList: {ctor: '[]'},
+			menuSubMenu: function (_p29) {
+				return {ctor: '[]'};
+			},
+			subMenuTitle: function (_p30) {
+				return {ctor: '[]'};
+			},
+			subMenuList: {ctor: '[]'}
+		});
+};
 var _user$project$AccordionMenu$addListAttributes = F2(
-	function (attrs, _p27) {
-		var _p28 = _p27;
-		var _p29 = _p28._0;
+	function (attrs, _p31) {
+		var _p32 = _p31;
+		var _p33 = _p32._0;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p29,
+				_p33,
 				{
-					ul: A2(_elm_lang$core$Basics_ops['++'], _p29.ul, attrs)
+					ul: A2(_elm_lang$core$Basics_ops['++'], _p33.ul, attrs)
 				}));
 	});
 var _user$project$AccordionMenu$addListItemAttributes = F2(
-	function (attrs, _p30) {
-		var _p31 = _p30;
-		var _p32 = _p31._0;
+	function (attrs, _p34) {
+		var _p35 = _p34;
+		var _p36 = _p35._0;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p32,
+				_p36,
 				{
-					li: A2(_elm_lang$core$Basics_ops['++'], _p32.li, attrs)
+					li: A2(_elm_lang$core$Basics_ops['++'], _p36.li, attrs)
 				}));
 	});
 var _user$project$AccordionMenu$menuAttributes = F2(
-	function (func, _p33) {
-		var _p34 = _p33;
+	function (func, _p37) {
+		var _p38 = _p37;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p34._0,
+				_p38._0,
 				{menu: func}));
 	});
 var _user$project$AccordionMenu$staticMenuAttributes = F2(
-	function (attrs, _p35) {
-		var _p36 = _p35;
+	function (attrs, _p39) {
+		var _p40 = _p39;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p36._0,
+				_p40._0,
 				{
-					menu: function (_p37) {
+					menu: function (_p41) {
 						return attrs;
 					}
 				}));
 	});
 var _user$project$AccordionMenu$menuTitleAttributes = F2(
-	function (func, _p38) {
-		var _p39 = _p38;
+	function (func, _p42) {
+		var _p43 = _p42;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p39._0,
+				_p43._0,
 				{menuTitle: func}));
 	});
 var _user$project$AccordionMenu$staticMenuTitleAttributes = F2(
-	function (attrs, _p40) {
-		var _p41 = _p40;
+	function (attrs, _p44) {
+		var _p45 = _p44;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p41._0,
+				_p45._0,
 				{
-					menuTitle: function (_p42) {
+					menuTitle: function (_p46) {
 						return attrs;
 					}
 				}));
 	});
 var _user$project$AccordionMenu$addMenuListAttributes = F2(
-	function (attrs, _p43) {
-		var _p44 = _p43;
-		var _p45 = _p44._0;
+	function (attrs, _p47) {
+		var _p48 = _p47;
+		var _p49 = _p48._0;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p45,
+				_p49,
 				{
-					menuList: A2(_elm_lang$core$Basics_ops['++'], _p45.menuList, attrs)
+					menuList: A2(_elm_lang$core$Basics_ops['++'], _p49.menuList, attrs)
 				}));
 	});
 var _user$project$AccordionMenu$subMenuAttributes = F2(
-	function (func, _p46) {
-		var _p47 = _p46;
+	function (func, _p50) {
+		var _p51 = _p50;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p47._0,
+				_p51._0,
 				{menuSubMenu: func}));
 	});
 var _user$project$AccordionMenu$staticSubMenuAttributes = F2(
-	function (attrs, _p48) {
-		var _p49 = _p48;
+	function (attrs, _p52) {
+		var _p53 = _p52;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p49._0,
+				_p53._0,
 				{
-					menuSubMenu: function (_p50) {
+					menuSubMenu: function (_p54) {
 						return attrs;
 					}
 				}));
 	});
 var _user$project$AccordionMenu$subMenuTitleAttributes = F2(
-	function (func, _p51) {
-		var _p52 = _p51;
+	function (func, _p55) {
+		var _p56 = _p55;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p52._0,
+				_p56._0,
 				{subMenuTitle: func}));
 	});
 var _user$project$AccordionMenu$staticSubMenuTitleAttributes = F2(
-	function (attrs, _p53) {
-		var _p54 = _p53;
+	function (attrs, _p57) {
+		var _p58 = _p57;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p54._0,
+				_p58._0,
 				{
-					subMenuTitle: function (_p55) {
+					subMenuTitle: function (_p59) {
 						return attrs;
 					}
 				}));
 	});
 var _user$project$AccordionMenu$addSubMenuListAttributes = F2(
-	function (attrs, _p56) {
-		var _p57 = _p56;
-		var _p58 = _p57._0;
+	function (attrs, _p60) {
+		var _p61 = _p60;
+		var _p62 = _p61._0;
 		return _user$project$AccordionMenu$customConfig(
 			_elm_lang$core$Native_Utils.update(
-				_p58,
+				_p62,
 				{
-					subMenuList: A2(_elm_lang$core$Basics_ops['++'], _p58.subMenuList, attrs)
+					subMenuList: A2(_elm_lang$core$Basics_ops['++'], _p62.subMenuList, attrs)
 				}));
 	});
 var _user$project$AccordionMenu$setMenuEventsOn = F2(
-	function (eventsOn, _p59) {
-		var _p60 = _p59;
-		return _user$project$AccordionMenu$Config(
-			_elm_lang$core$Native_Utils.update(
-				_p60._0,
-				{menuEventsOn: eventsOn}));
-	});
-var _user$project$AccordionMenu$setMenuEventsOnClick = _user$project$AccordionMenu$setMenuEventsOn(_user$project$AccordionMenu$Click);
-var _user$project$AccordionMenu$setMenuEventsOnMouseEnter = _user$project$AccordionMenu$setMenuEventsOn(_user$project$AccordionMenu$MouseEnter);
-var _user$project$AccordionMenu$setOpenArrow = F2(
-	function (details, _p61) {
-		var _p62 = _p61;
-		return _user$project$AccordionMenu$Config(
-			_elm_lang$core$Native_Utils.update(
-				_p62._0,
-				{openArrow: details}));
-	});
-var _user$project$AccordionMenu$setCloseArrow = F2(
-	function (details, _p63) {
+	function (eventsOn, _p63) {
 		var _p64 = _p63;
 		return _user$project$AccordionMenu$Config(
 			_elm_lang$core$Native_Utils.update(
 				_p64._0,
+				{menuEventsOn: eventsOn}));
+	});
+var _user$project$AccordionMenu$setMenuEventsOnClick = _user$project$AccordionMenu$setMenuEventsOn(_user$project$AccordionMenu$Click);
+var _user$project$AccordionMenu$setMenuEventsOnHover = _user$project$AccordionMenu$setMenuEventsOn(_user$project$AccordionMenu$Hover);
+var _user$project$AccordionMenu$setOpenArrow = F2(
+	function (details, _p65) {
+		var _p66 = _p65;
+		return _user$project$AccordionMenu$Config(
+			_elm_lang$core$Native_Utils.update(
+				_p66._0,
+				{openArrow: details}));
+	});
+var _user$project$AccordionMenu$setCloseArrow = F2(
+	function (details, _p67) {
+		var _p68 = _p67;
+		return _user$project$AccordionMenu$Config(
+			_elm_lang$core$Native_Utils.update(
+				_p68._0,
 				{closeArrow: details}));
 	});
 var _user$project$AccordionMenu$NoOp = {ctor: 'NoOp'};
@@ -8827,7 +8856,7 @@ var _user$project$AccordionMenu$mapNeverToNoOp = F2(
 	function (mapper, attr) {
 		return A2(
 			_elm_lang$html$Html_Attributes$map,
-			function (_p65) {
+			function (_p69) {
 				return mapper(_user$project$AccordionMenu$NoOp);
 			},
 			attr);
@@ -8840,34 +8869,34 @@ var _user$project$AccordionMenu$noOpAttrs = F2(
 			attrs);
 	});
 var _user$project$AccordionMenu$viewSubMenuItem = F2(
-	function (_p66, item) {
-		var _p67 = _p66;
-		var _p69 = _p67._0;
-		var liAttrs = A2(_user$project$AccordionMenu$noOpAttrs, _p69.updateMenu, _p69.li);
-		var _p68 = item;
+	function (_p70, item) {
+		var _p71 = _p70;
+		var _p73 = _p71._0;
+		var liAttrs = A2(_user$project$AccordionMenu$noOpAttrs, _p73.updateMenu, _p73.li);
+		var _p72 = item;
 		return {
 			ctor: '_Tuple2',
-			_0: _p68._0,
+			_0: _p72._0,
 			_1: A2(
 				_elm_lang$html$Html$li,
-				A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p68._1.attributes),
-				_p68._1.children)
+				A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p72._1.attributes),
+				_p72._1.children)
 		};
 	});
 var _user$project$AccordionMenu$viewSubMenu = F2(
-	function (_p70, items) {
-		var _p71 = _p70;
-		var _p72 = _p71._0;
+	function (_p74, items) {
+		var _p75 = _p74;
+		var _p76 = _p75._0;
 		return A2(
 			_elm_lang$html$Html_Keyed$ul,
 			A2(
 				_user$project$AccordionMenu$noOpAttrs,
-				_p72.updateMenu,
-				A2(_elm_lang$core$Basics_ops['++'], _p72.ul, _p72.subMenuList)),
+				_p76.updateMenu,
+				A2(_elm_lang$core$Basics_ops['++'], _p76.ul, _p76.subMenuList)),
 			A2(
 				_elm_lang$core$List$map,
 				_user$project$AccordionMenu$viewSubMenuItem(
-					_user$project$AccordionMenu$Config(_p72)),
+					_user$project$AccordionMenu$Config(_p76)),
 				items));
 	});
 var _user$project$AccordionMenu$noOpHtmlDetails = F2(
@@ -8879,41 +8908,14 @@ var _user$project$AccordionMenu$noOpHtmlDetails = F2(
 				children: A2(
 					_elm_lang$core$List$map,
 					_elm_lang$html$Html$map(
-						function (_p73) {
+						function (_p77) {
 							return mapper(_user$project$AccordionMenu$NoOp);
 						}),
 					details.children)
 			});
 	});
 var _user$project$AccordionMenu$viewTitle = F3(
-	function (_p74, title_, state) {
-		var _p75 = _p74;
-		var _p77 = _p75._0;
-		var arrow = function (state) {
-			var _p76 = state;
-			if (_p76.ctor === 'Open') {
-				return A2(_user$project$AccordionMenu$noOpHtmlDetails, _p77.updateMenu, _p77.closeArrow);
-			} else {
-				return A2(_user$project$AccordionMenu$noOpHtmlDetails, _p77.updateMenu, _p77.openArrow);
-			}
-		};
-		return A2(
-			_elm_lang$html$Html$div,
-			A2(
-				_user$project$AccordionMenu$noOpAttrs,
-				_p77.updateMenu,
-				_p77.menuTitle(state)),
-			{
-				ctor: '::',
-				_0: A2(
-					_user$project$AccordionMenu$viewMenuTitleAction,
-					title_,
-					arrow(state)),
-				_1: {ctor: '[]'}
-			});
-	});
-var _user$project$AccordionMenu$viewSubTitle = F4(
-	function (_p78, index, title_, state) {
+	function (_p78, title_, state) {
 		var _p79 = _p78;
 		var _p81 = _p79._0;
 		var arrow = function (state) {
@@ -8929,7 +8931,34 @@ var _user$project$AccordionMenu$viewSubTitle = F4(
 			A2(
 				_user$project$AccordionMenu$noOpAttrs,
 				_p81.updateMenu,
-				_p81.subMenuTitle(state)),
+				_p81.menuTitle(state)),
+			{
+				ctor: '::',
+				_0: A2(
+					_user$project$AccordionMenu$viewMenuTitleAction,
+					title_,
+					arrow(state)),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$AccordionMenu$viewSubTitle = F4(
+	function (_p82, index, title_, state) {
+		var _p83 = _p82;
+		var _p85 = _p83._0;
+		var arrow = function (state) {
+			var _p84 = state;
+			if (_p84.ctor === 'Open') {
+				return A2(_user$project$AccordionMenu$noOpHtmlDetails, _p85.updateMenu, _p85.closeArrow);
+			} else {
+				return A2(_user$project$AccordionMenu$noOpHtmlDetails, _p85.updateMenu, _p85.openArrow);
+			}
+		};
+		return A2(
+			_elm_lang$html$Html$div,
+			A2(
+				_user$project$AccordionMenu$noOpAttrs,
+				_p85.updateMenu,
+				_p85.subMenuTitle(state)),
 			{
 				ctor: '::',
 				_0: A2(
@@ -8953,8 +8982,8 @@ var _user$project$AccordionMenu$ToggleSubMenuState = function (a) {
 };
 var _user$project$AccordionMenu$handleSubMenuEventsWith = F3(
 	function (updateMenu, eventsOn, index) {
-		var _p82 = eventsOn;
-		if (_p82.ctor === 'MouseEnter') {
+		var _p86 = eventsOn;
+		if (_p86.ctor === 'Hover') {
 			return {
 				ctor: '::',
 				_0: A2(
@@ -8989,28 +9018,28 @@ var _user$project$AccordionMenu$handleSubMenuEventsWith = F3(
 		}
 	});
 var _user$project$AccordionMenu$viewMenuItem = F3(
-	function (_p83, index, item) {
-		var _p84 = _p83;
-		var _p88 = _p84._0;
+	function (_p87, index, item) {
+		var _p88 = _p87;
+		var _p92 = _p88._0;
 		var handlers = function (index) {
-			return A3(_user$project$AccordionMenu$handleSubMenuEventsWith, _p88.updateMenu, _p88.menuEventsOn, index);
+			return A3(_user$project$AccordionMenu$handleSubMenuEventsWith, _p92.updateMenu, _p92.menuEventsOn, index);
 		};
-		var liAttrs = A2(_user$project$AccordionMenu$noOpAttrs, _p88.updateMenu, _p88.li);
-		var _p85 = item;
-		if (_p85.ctor === 'MenuItem') {
+		var liAttrs = A2(_user$project$AccordionMenu$noOpAttrs, _p92.updateMenu, _p92.li);
+		var _p89 = item;
+		if (_p89.ctor === 'MenuItem') {
 			return {
 				ctor: '_Tuple2',
-				_0: _p85._0,
+				_0: _p89._0,
 				_1: A2(
 					_elm_lang$html$Html$li,
-					A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p85._1.attributes),
-					_p85._1.children)
+					A2(_elm_lang$core$Basics_ops['++'], liAttrs, _p89._1.attributes),
+					_p89._1.children)
 			};
 		} else {
-			var _p87 = _p85._1._0.state;
+			var _p91 = _p89._1._0.state;
 			return {
 				ctor: '_Tuple2',
-				_0: _p85._0,
+				_0: _p89._0,
 				_1: A2(
 					_elm_lang$html$Html$li,
 					A2(
@@ -9020,8 +9049,8 @@ var _user$project$AccordionMenu$viewMenuItem = F3(
 							_elm_lang$core$Basics_ops['++'],
 							A2(
 								_user$project$AccordionMenu$noOpAttrs,
-								_p88.updateMenu,
-								_p88.menuSubMenu(_p87)),
+								_p92.updateMenu,
+								_p92.menuSubMenu(_p91)),
 							liAttrs)),
 					A2(
 						_elm_lang$core$Basics_ops['++'],
@@ -9029,21 +9058,21 @@ var _user$project$AccordionMenu$viewMenuItem = F3(
 							ctor: '::',
 							_0: A4(
 								_user$project$AccordionMenu$viewSubTitle,
-								_user$project$AccordionMenu$Config(_p88),
+								_user$project$AccordionMenu$Config(_p92),
 								index,
-								_p85._1._0.title,
-								_p87),
+								_p89._1._0.title,
+								_p91),
 							_1: {ctor: '[]'}
 						},
 						function () {
-							var _p86 = _p87;
-							if (_p86.ctor === 'Open') {
+							var _p90 = _p91;
+							if (_p90.ctor === 'Open') {
 								return {
 									ctor: '::',
 									_0: A2(
 										_user$project$AccordionMenu$viewSubMenu,
-										_user$project$AccordionMenu$Config(_p88),
-										_p85._1._0.items),
+										_user$project$AccordionMenu$Config(_p92),
+										_p89._1._0.items),
 									_1: {ctor: '[]'}
 								};
 							} else {
@@ -9054,26 +9083,26 @@ var _user$project$AccordionMenu$viewMenuItem = F3(
 		}
 	});
 var _user$project$AccordionMenu$viewMenu = F2(
-	function (_p89, menuItems) {
-		var _p90 = _p89;
-		var _p91 = _p90._0;
+	function (_p93, menuItems) {
+		var _p94 = _p93;
+		var _p95 = _p94._0;
 		return A2(
 			_elm_lang$html$Html_Keyed$ul,
 			A2(
 				_user$project$AccordionMenu$noOpAttrs,
-				_p91.updateMenu,
-				A2(_elm_lang$core$Basics_ops['++'], _p91.ul, _p91.menuList)),
+				_p95.updateMenu,
+				A2(_elm_lang$core$Basics_ops['++'], _p95.ul, _p95.menuList)),
 			A2(
 				_elm_lang$core$List$indexedMap,
 				_user$project$AccordionMenu$viewMenuItem(
-					_user$project$AccordionMenu$Config(_p91)),
+					_user$project$AccordionMenu$Config(_p95)),
 				menuItems));
 	});
 var _user$project$AccordionMenu$ToggleMenuState = {ctor: 'ToggleMenuState'};
 var _user$project$AccordionMenu$handleMenuEventsWith = F2(
 	function (updateMenu, eventsOn) {
-		var _p92 = eventsOn;
-		if (_p92.ctor === 'MouseEnter') {
+		var _p96 = eventsOn;
+		if (_p96.ctor === 'Hover') {
 			return {
 				ctor: '::',
 				_0: A2(
@@ -9105,12 +9134,12 @@ var _user$project$AccordionMenu$handleMenuEventsWith = F2(
 		}
 	});
 var _user$project$AccordionMenu$view = F2(
-	function (_p94, _p93) {
-		var _p95 = _p94;
-		var _p99 = _p95._0;
-		var _p96 = _p93;
-		var _p98 = _p96._0.state;
-		var handlers = A2(_user$project$AccordionMenu$handleMenuEventsWith, _p99.updateMenu, _p99.menuEventsOn);
+	function (_p98, _p97) {
+		var _p99 = _p98;
+		var _p103 = _p99._0;
+		var _p100 = _p97;
+		var _p102 = _p100._0.state;
+		var handlers = A2(_user$project$AccordionMenu$handleMenuEventsWith, _p103.updateMenu, _p103.menuEventsOn);
 		return A2(
 			_elm_lang$html$Html$div,
 			A2(
@@ -9118,28 +9147,28 @@ var _user$project$AccordionMenu$view = F2(
 				handlers,
 				A2(
 					_user$project$AccordionMenu$noOpAttrs,
-					_p99.updateMenu,
-					_p99.menu(_p98))),
+					_p103.updateMenu,
+					_p103.menu(_p102))),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				{
 					ctor: '::',
 					_0: A3(
 						_user$project$AccordionMenu$viewTitle,
-						_user$project$AccordionMenu$Config(_p99),
-						_p96._0.title,
-						_p98),
+						_user$project$AccordionMenu$Config(_p103),
+						_p100._0.title,
+						_p102),
 					_1: {ctor: '[]'}
 				},
 				function () {
-					var _p97 = _p98;
-					if (_p97.ctor === 'Open') {
+					var _p101 = _p102;
+					if (_p101.ctor === 'Open') {
 						return {
 							ctor: '::',
 							_0: A2(
 								_user$project$AccordionMenu$viewMenu,
-								_user$project$AccordionMenu$Config(_p99),
-								_p96._0.items),
+								_user$project$AccordionMenu$Config(_p103),
+								_p100._0.items),
 							_1: {ctor: '[]'}
 						};
 					} else {
@@ -9215,6 +9244,28 @@ var _user$project$AccordionMenu_Style$subMenuTitleClass = F2(
 					};
 				}(
 					func(_p2));
+			},
+			config);
+	});
+var _user$project$AccordionMenu_Style$staticSubMenuTitleStyles = F2(
+	function (styles, config) {
+		return A2(
+			_user$project$AccordionMenu$staticSubMenuTitleAttributes,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(styles),
+				_1: {ctor: '[]'}
+			},
+			config);
+	});
+var _user$project$AccordionMenu_Style$staticSubMenuTitleClass = F2(
+	function (class_, config) {
+		return A2(
+			_user$project$AccordionMenu$staticSubMenuTitleAttributes,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(class_),
+				_1: {ctor: '[]'}
 			},
 			config);
 	});
@@ -9355,6 +9406,28 @@ var _user$project$AccordionMenu_Style$menuTitleClass = F2(
 					};
 				}(
 					func(_p8));
+			},
+			config);
+	});
+var _user$project$AccordionMenu_Style$staticMenuTitleStyles = F2(
+	function (styles, config) {
+		return A2(
+			_user$project$AccordionMenu$staticMenuTitleAttributes,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(styles),
+				_1: {ctor: '[]'}
+			},
+			config);
+	});
+var _user$project$AccordionMenu_Style$staticMenuTitleClass = F2(
+	function (class_, config) {
+		return A2(
+			_user$project$AccordionMenu$staticMenuTitleAttributes,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(class_),
+				_1: {ctor: '[]'}
 			},
 			config);
 	});
@@ -9535,37 +9608,6 @@ var _user$project$AccordionMenu_Style$absolutePositioned = F2(
 					}),
 				config));
 	});
-var _user$project$AccordionMenu_Style$blankConfig = function (updateMenu) {
-	return _user$project$AccordionMenu$customConfig(
-		{
-			updateMenu: updateMenu,
-			menuEventsOn: _user$project$AccordionMenu$Click,
-			openArrow: {
-				attributes: {ctor: '[]'},
-				children: {ctor: '[]'}
-			},
-			closeArrow: {
-				attributes: {ctor: '[]'},
-				children: {ctor: '[]'}
-			},
-			ul: {ctor: '[]'},
-			li: {ctor: '[]'},
-			menu: function (_p12) {
-				return {ctor: '[]'};
-			},
-			menuTitle: function (_p13) {
-				return {ctor: '[]'};
-			},
-			menuList: {ctor: '[]'},
-			menuSubMenu: function (_p14) {
-				return {ctor: '[]'};
-			},
-			subMenuTitle: function (_p15) {
-				return {ctor: '[]'};
-			},
-			subMenuList: {ctor: '[]'}
-		});
-};
 
 var _user$project$Simple$styleArrows = {
 	ctor: '::',
@@ -9593,7 +9635,7 @@ var _user$project$Simple$styleMenuList = {
 		_0: {ctor: '_Tuple2', _0: 'padding', _1: '1rem'},
 		_1: {
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'transform', _1: 'translate(0px, 30px)'},
+			_0: {ctor: '_Tuple2', _0: 'top', _1: '30px'},
 			_1: {
 				ctor: '::',
 				_0: {ctor: '_Tuple2', _0: 'box-shadow', _1: '0 0 5px rgba(0,0,0,0.3)'},
@@ -9839,7 +9881,7 @@ var _user$project$Simple$menuConfig = F2(
 													_1: {ctor: '[]'}
 												}
 											},
-											_user$project$AccordionMenu_Style$blankConfig(
+											_user$project$AccordionMenu$blankConfig(
 												_user$project$Simple$UpdateMenu(id)))))))))));
 	});
 var _user$project$Simple$viewMenu = F2(
@@ -9851,7 +9893,7 @@ var _user$project$Simple$viewMenu = F2(
 				var _p11 = id;
 				switch (_p11) {
 					case 'mouse':
-						return _user$project$AccordionMenu$setMenuEventsOnMouseEnter(
+						return _user$project$AccordionMenu$setMenuEventsOnHover(
 							A2(_user$project$Simple$menuConfig, 'mouse', 'darkred'));
 					case 'click':
 						return A2(_user$project$Simple$menuConfig, 'click', 'darkgreen');
